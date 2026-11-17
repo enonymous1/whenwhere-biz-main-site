@@ -1028,6 +1028,7 @@ function doPost(e) {
         var isLive = false;
         var cur = { y: 2026, m: 11 };
         var MIN = { y: 2026, m: 11 }, MAX = { y: 2027, m: 2 };
+        var RANGE_MONTHS = 24; /* live calendar: how many months ahead visitors can browse, current month included */
         var selected = null;
 
         function pad(n) { return String(n).padStart(2, "0"); }
@@ -1189,7 +1190,7 @@ function doPost(e) {
             data = dataFromCSV(text); isLive = true;
             var now = new Date();
             MIN = { y: now.getFullYear(), m: now.getMonth() };
-            var maxD = new Date(now.getFullYear(), now.getMonth() + 11, 1);
+            var maxD = new Date(now.getFullYear(), now.getMonth() + RANGE_MONTHS - 1, 1);
             MAX = { y: maxD.getFullYear(), m: maxD.getMonth() };
             cur = { y: MIN.y, m: MIN.m };
             var when = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + " at " + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });

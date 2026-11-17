@@ -382,7 +382,7 @@
                 <li>Weddings, vineyards, alumni &amp; festivals</li>
                 <li>Interest list for 2027 now open</li>
               </ul>
-              <div class="cta"><a class="btn" href="https://whenwhere.biz/drone-light-shows/">Visit the drone shows site →</a></div>
+              <div class="cta"><a class="btn" href="https://enonymous1.github.io/whenwhere-drone-light-shows/">Visit the drone shows site →</a></div>
             </div>
           </article>
         </div>
@@ -433,7 +433,7 @@
               <li>Founding-season interest list for 2027 is open now, with priority dates for early inquiries</li>
             </ul>
             <div style="display:flex;gap:12px;flex-wrap:wrap">
-              <a class="btn" href="https://whenwhere.biz/drone-light-shows/">Explore drone light shows →</a>
+              <a class="btn" href="https://enonymous1.github.io/whenwhere-drone-light-shows/">Explore drone light shows →</a>
               <a class="btn ghost" href="#inquire" data-interest="Drone show">Check your 2027 date</a>
             </div>
           </div>
@@ -442,7 +442,7 @@
             <figcaption><span>Now forming: <b id="shapeName">Interlocking hearts</b></span><span id="droneCount"></span></figcaption>
           </figure>
         </div>
-        <p style="color:var(--night-muted);font-size:.88rem;margin-top:22px">A simplified sketch of how a show is choreographed — try the full Formation Studio, with your own words, on the <a href="https://whenwhere.biz/drone-light-shows/" style="color:var(--gold-bright)">drone light shows site</a>.</p>
+        <p style="color:var(--night-muted);font-size:.88rem;margin-top:22px">A simplified sketch of how a show is choreographed — try the full Formation Studio, with your own words, on the <a href="https://enonymous1.github.io/whenwhere-drone-light-shows/" style="color:var(--gold-bright)">drone light shows site</a>.</p>
       </div>
     </section>
 
@@ -534,7 +534,7 @@
               <p><strong>2 · Private bookings Sheet (never published)</strong></p>
               <p>Keep a second, separate Sheet for the real work — client names, venue, package, price, contact details, payment status. Never publish it, never put its link in this page. The public Sheet holds only Date · Status · Note, so the most it can ever show is that a date is booked.</p>
               <p><strong>3 · Inquiry form → private Sheet (Apps Script)</strong></p>
-              <p>In your <em>private</em> Sheet: <strong>Extensions → Apps Script</strong>, paste the code below, change the notification address to the personal email you want inquiries sent to, then <strong>Deploy → New deployment → Web app</strong> (execute as Me, access: Anyone). Copy the Web app URL and paste it as <code>INQUIRY_ENDPOINT</code> at the top of the calendar script. From then on this form saves straight to the private Sheet and emails you — you reply from that personal Gmail, with one shared signature. <code>hello@whenwhere.biz</code> stays optional and unconfirmed until you set up a real inbox for it; nothing here depends on it.</p>
+              <p>In your <em>private</em> Sheet: <strong>Extensions → Apps Script</strong>, paste the code below, change the notification address to the personal email you want inquiries sent to, then <strong>Deploy → New deployment → Web app</strong> (execute as Me, access: Anyone). Copy the Web app URL and paste it as <code>INQUIRY_ENDPOINT</code> at the top of the calendar script. From then on this form saves straight to the private Sheet and emails you — you reply from that personal Gmail, with one shared signature. No business inbox is set up yet, and nothing here depends on one; a real business address can be added later without rebuilding anything.</p>
               <pre><code>/**
  * WhenWhere.biz — inquiry form backend (Option A)
  *
@@ -858,10 +858,9 @@ function doPost(e) {
 
             <div class="result" id="resultPanel" role="status">
               <h3>Your inquiry is ready, <span id="resultName">friend</span> ✦</h3>
-              <p id="resultFallbackNote">Open it in your email app, copy it, or download it to send later. We&rsquo;ll reply from our personal email.</p>
+              <p id="resultFallbackNote">Copy it or download it to send later. We&rsquo;ll reply from our personal email.</p>
               <pre id="resultText"></pre>
               <div class="row">
-                <a class="btn" id="mailtoBtn" href="mailto:hello@whenwhere.biz">Open in Email App</a>
                 <button class="btn ghost" type="button" id="copyBtn">Copy my inquiry</button>
                 <button class="btn ghost" type="button" id="dlBtn">Download as a file</button>
                 <span class="copied" id="copiedMsg"></span>
@@ -876,8 +875,7 @@ function doPost(e) {
       <div class="wrap">
         <span>WhenWhere.biz — event production, DJ &amp; MC and drone light shows · Charlottesville &amp; Central Virginia</span>
         <span style="display:flex;gap:18px;flex-wrap:wrap">
-          <a href="https://whenwhere.biz/drone-light-shows/">Drone Light Shows →</a>
-          <a href="mailto:hello@whenwhere.biz">hello@whenwhere.biz</a>
+          <a href="https://enonymous1.github.io/whenwhere-drone-light-shows/">Drone Light Shows →</a>
         </span>
       </div>
     </footer>
@@ -1216,7 +1214,7 @@ function doPost(e) {
           var note = document.getElementById('formModeNote');
           if (!ep) {
             if (btn) btn.textContent = 'Build my inquiry';
-            if (note) note.innerHTML = 'Submitting builds your inquiry below — send it by email, copy it, or download it. Nothing is sent until you say so. We reply from our personal email for now.';
+            if (note) note.innerHTML = 'Submitting builds your inquiry below — copy it or download it. Nothing is sent until you say so. We reply from our personal email for now.';
           } else {
             if (btn) btn.textContent = 'Send my inquiry';
             if (note) note.textContent = 'Submitting saves your inquiry to our private Sheet and notifies us — we reply from our personal email, usually within one business day.';
@@ -1258,8 +1256,6 @@ function doPost(e) {
 
           document.getElementById('resultText').textContent = lines;
           document.getElementById('resultName').textContent = val('inName').split(' ')[0];
-          var mail = document.getElementById('mailtoBtn');
-          mail.href = 'mailto:hello@whenwhere.biz?subject=' + encodeURIComponent('WhenWhere inquiry — ' + val('inType')) + '&body=' + encodeURIComponent(lines);
 
           var endpoint = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.INQUIRY_ENDPOINT || '').trim();
           var panel = document.getElementById('resultPanel');
@@ -1307,7 +1303,7 @@ function doPost(e) {
             })
             .catch(function () {
               sending.className = 'form-sending show err';
-              sending.textContent = 'That send didn&rsquo;t go through — use the options below to email, copy, or download your inquiry instead.';
+              sending.textContent = 'That send didn&rsquo;t go through — use the options below to copy or download your inquiry instead.';
               showFallback();
             })
             .finally(function () {

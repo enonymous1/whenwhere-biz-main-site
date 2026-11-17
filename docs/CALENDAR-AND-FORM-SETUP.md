@@ -7,7 +7,7 @@ sheet the form writes to.
 
 **What you end up with**
 
-- A calendar grid on the site (Night & Gold / Sunset Peach) showing
+- A calendar grid on the site (Night & Gold) showing
   **Available / Hold / Booked**. Tap a date → detail → “Check this date”
   prefills the inquiry form with that date.
 - Edit a cell in the public Sheet and the site updates on the next page

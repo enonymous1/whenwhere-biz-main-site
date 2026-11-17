@@ -9,13 +9,12 @@ drone light shows page links home to.
 
 ## What is on the page
 
-- **Two themes, one site** — a toggle in the nav switches between
-  Night & Gold (night navy `#060a1a` + gold `#d9a441`, the same design
-  system as the drone light shows page) and Sunset Peach (peach header
-  and backgrounds, dark-brown feature blocks, burnt-orange accents).
+- **One theme — Night & Gold** — night navy `#060a1a` + gold
+  `#d9a441`, the same design system as the drone light shows page.
+  There is no theme picker; the Sunset Peach theme was removed.
 - **The intro, verbatim** — "At WHEN & WHERE, our goal is to provide
   the heart beat to your celebration… an evening that will resonate
-  for a lifetime." It sits under the hero in both themes.
+  for a lifetime." It sits under the hero.
 - **Sections for every nav link** — Home, Gallery, Services, Weddings
   & Events, Calendar, FAQ, Reviews, About, Contact. Gallery reuses the
   site's existing photos.
@@ -96,7 +95,9 @@ git, and no backend server needed. The workflow
 go through the WhenWhere.biz Main Site build and are re-exported
 over `index.html`, then pushed the same way. Calendar date changes
 do not need a push at all once the Sheet is connected — edit the
-Sheet.
+Sheet. Note: the Sunset Peach theme and theme picker were removed
+from this repo on 2026-11-17; if the page is ever re-exported from
+the build, that removal has to be re-applied to the export.
 
 When the full site is ready, this page is the one that moves to
 `whenwhere.biz` itself — the drone page already links home to it.

@@ -199,6 +199,65 @@
       .gallery figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 16px 12px;color:#fff;font-size:.92rem;background:linear-gradient(180deg,transparent,rgba(3,4,13,.82))}
       .gallery figure.wide{grid-column:span 2}
       .gallery figure.wide img{height:250px}
+      /* ---------- availability calendar (Option A) ---------- */
+      .cal-status{margin-top:20px;border:1px dashed var(--gold);background:var(--surface);border-radius:10px;padding:13px 16px;font-size:.93rem;color:var(--muted)}
+      .cal-status strong{color:var(--ink)}
+      .cal-status.live{border-style:solid;border-color:var(--gold)}
+      .cal-wrap{margin-top:20px;background:var(--night);color:var(--night-ink);border:1px solid #26305c;border-radius:var(--radius);padding:22px}
+      html[data-theme="peach"] .cal-wrap{border-color:#7a4e1f}
+      .cal-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+      .cal-head .cal-month{font-family:"Marcellus",serif;font-size:1.45rem;color:#fff;min-width:10.5em}
+      html[data-theme="peach"] .cal-head .cal-month{color:var(--night-ink)}
+      .cal-head .cal-sub{color:var(--night-muted);font-size:.9rem;width:100%}
+      .cal-nav{display:flex;gap:8px;margin-left:auto}
+      .cal-nav button{width:44px;height:44px;border-radius:50%;border:1px solid #4a579a;background:transparent;color:#fff;cursor:pointer;font-size:1.15rem;line-height:1;display:flex;align-items:center;justify-content:center}
+      .cal-nav button:hover:not(:disabled){border-color:var(--gold-bright);color:var(--gold-bright)}
+      .cal-nav button:disabled{opacity:.35;cursor:default}
+      html[data-theme="peach"] .cal-nav button{border-color:#a97a45;color:var(--night-ink)}
+      .cal-dow,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+      .cal-dow{margin-top:12px}
+      .cal-dow div{text-align:center;font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-bright);padding:4px 0}
+      .cal-cell{aspect-ratio:1/1.08;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:6px 5px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;color:var(--night-ink);text-align:left;width:100%;min-width:0;overflow:hidden;font-family:"Jost",sans-serif}
+      .cal-cell:hover{border-color:var(--gold-bright)}
+      .cal-cell:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+      .cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
+      .cal-cell .dnum{font-weight:600;font-size:.95rem;line-height:1.1}
+      .cal-cell .dstat{font-size:.58rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.3;overflow-wrap:anywhere}
+      .cal-cell.is-available .dstat{color:var(--mint)}
+      .cal-cell.is-hold{background:rgba(217,164,65,.20);border-color:rgba(217,164,65,.55)}
+      .cal-cell.is-hold .dstat{color:var(--gold-bright)}
+      .cal-cell.is-booked{opacity:.78;background:rgba(255,255,255,.03)}
+      .cal-cell.is-booked .dstat{color:var(--night-muted)}
+      .cal-cell.is-booked .dnum{text-decoration:line-through;text-decoration-color:var(--gold-bright)}
+      .cal-cell.is-today{outline:2px solid var(--gold-bright);outline-offset:1px}
+      .cal-cell[aria-selected="true"]{box-shadow:0 0 0 2px var(--gold-bright) inset}
+      .cal-legend{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:16px;font-size:.82rem;color:var(--night-muted)}
+      .cal-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
+      .cal-detail{margin-top:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);border-radius:10px;padding:16px 18px;font-size:.96rem;color:var(--night-ink);min-height:76px}
+      .cal-detail b{font-family:"Marcellus",serif;font-size:1.05rem;color:#fff}
+      html[data-theme="peach"] .cal-detail b{color:var(--night-ink)}
+      .cal-detail .note{color:var(--night-muted)}
+      .cal-detail .btn{margin-top:10px}
+      .setup{margin-top:30px;max-width:900px}
+      .setup details .a{color:var(--muted);font-size:.96rem}
+      .setup details .a p{margin:0 0 10px}
+      .setup details .a ol,.setup details .a ul{margin:0 0 12px;padding-left:22px}
+      .setup details .a li{margin-bottom:6px}
+      .setup code{font-family:ui-monospace,Menlo,monospace;font-size:.86em;background:var(--surface2);padding:1px 6px;border-radius:5px;color:var(--ink)}
+      .setup pre{background:var(--night);color:var(--night-ink);border-radius:10px;padding:16px;overflow:auto;font-size:.8rem;line-height:1.5;margin:0 0 14px;white-space:pre-wrap;word-break:break-word}
+      .setup pre code{background:transparent;color:inherit;padding:0}
+      .form-sending{display:none;margin-top:14px;border:1px solid var(--gold-bright);border-radius:10px;padding:13px 16px;color:var(--night-ink);font-size:.95rem}
+      .form-sending.show{display:block}
+      .form-sending.ok{border-color:var(--mint)}
+      .form-sending.err{border-color:#ff7d9c}
+      @media (max-width:620px){
+        .cal-wrap{padding:14px 12px 16px}
+        .cal-grid,.cal-dow{gap:3px}
+        .cal-cell{padding:4px 3px;border-radius:7px;aspect-ratio:auto;min-height:56px}
+        .cal-cell .dnum{font-size:.82rem}
+        .cal-cell .dstat{font-size:.5rem}
+        .cal-head .cal-month{font-size:1.2rem;min-width:0}
+      }
       /* ---------- reviews empty state ---------- */
       .reviews-box{margin-top:30px;border:1px dashed var(--gold);border-radius:var(--radius);padding:36px 30px;text-align:center;background:var(--surface)}
       .reviews-box h3{font-size:1.4rem;margin-bottom:8px}
@@ -458,9 +517,31 @@
 
     <section id="calendar" style="padding-top:0">
       <div class="wrap">
-        <p class="kicker">Calendar</p>
-        <h2>When to book — and how far ahead</h2>
-        <p class="lede">We don&rsquo;t publish a live calendar of booked dates — every event is confirmed personally, not by a booking widget. Here&rsquo;s how the seasons and lead times generally run, then check your exact date with us.</p>
+        <p class="kicker">Calendar · Availability</p>
+        <h2>Check your date</h2>
+        <p class="lede">A quick look at which dates are open, on hold, or booked — then send an inquiry and we&rsquo;ll confirm your exact date personally. Only a date, a status, and a short public note are ever shown here — never client names, venues, or prices.</p>
+
+        <div class="cal-status" id="calStatus" role="status"><strong>Loading availability…</strong></div>
+
+        <div class="cal-wrap">
+          <div class="cal-head">
+            <div class="cal-month" id="calMonthLabel">December 2026</div>
+            <div class="cal-nav">
+              <button type="button" id="calPrev" aria-label="Previous month">‹</button>
+              <button type="button" id="calNext" aria-label="Next month">›</button>
+            </div>
+            <div class="cal-sub" id="calSubLabel">Charlottesville &amp; Central Virginia</div>
+          </div>
+          <div class="cal-dow" aria-hidden="true"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+          <div class="cal-grid" id="calGrid" role="grid" aria-label="Availability calendar"></div>
+          <div class="cal-legend" aria-hidden="true">
+            <span><i style="background:#7dffcb"></i>Available</span>
+            <span><i style="background:#d9a441"></i>On hold</span>
+            <span><i style="background:#59617a"></i>Booked</span>
+          </div>
+          <div class="cal-detail" id="calDetail" aria-live="polite">Tap any date to see its status and what to do next.</div>
+        </div>
+
         <div class="steps three">
           <div class="step">
             <div class="num">✦</div>
@@ -478,7 +559,39 @@
             <p>Drone light shows need extra lead time for custom design and airspace authorisations. The 2027 founding-season interest list is open now, with priority dates for early inquiries.</p>
           </div>
         </div>
-        <p style="margin:26px 0 0"><a class="btn" href="#inquire">Check your date</a></p>
+
+        <div class="setup">
+          <details>
+            <summary>For the WhenWhere team — set up the live Sheet &amp; inquiry backend</summary>
+            <div class="a">
+              <p><strong>1 · Public availability Sheet (what this grid reads)</strong></p>
+              <ol>
+                <li>Create a Google Sheet with exactly three columns in row 1: <code>Date</code> | <code>Status</code> | <code>Note</code>.</li>
+                <li>Add one row per held or booked date — e.g. <code>2027-05-15</code> | <code>Booked</code> | <code>Evening only</code>. Status is <code>Available</code>, <code>Hold</code>, or <code>Booked</code>. Every date with no row defaults to Available, so you only list exceptions — plus any Available date you want to annotate.</li>
+                <li>In Google Sheets: <strong>File → Share → Publish to web</strong>, choose that sheet, choose <strong>Comma-separated values (.csv)</strong>, and Publish. Copy the link it gives you.</li>
+                <li>In this page&rsquo;s code, find <code>SHEET_CSV_URL</code> at the top of the calendar script and paste the link between the quotes, then publish the site once. From then on the grid reads the Sheet live on every page load — no redeploy and no code to change when dates change. Just edit a cell in the Sheet.</li>
+              </ol>
+              <p><strong>2 · Private bookings Sheet (never published)</strong></p>
+              <p>Keep a second, separate Sheet for the real work — client names, venue, package, price, contact details, payment status. Never publish it, never put its link in this page. The public Sheet holds only Date · Status · Note, so the most it can ever show is that a date is booked.</p>
+              <p><strong>3 · Inquiry form → private Sheet (Apps Script)</strong></p>
+              <p>In your <em>private</em> Sheet: <strong>Extensions → Apps Script</strong>, paste the code below, change the notification address to the personal email you want inquiries sent to, then <strong>Deploy → New deployment → Web app</strong> (execute as Me, access: Anyone). Copy the Web app URL and paste it as <code>INQUIRY_ENDPOINT</code> at the top of the calendar script. From then on this form saves straight to the private Sheet and emails you — you reply from that personal Gmail, with one shared signature. <code>hello@whenwhere.biz</code> stays optional and unconfirmed until you set up a real inbox for it; nothing here depends on it.</p>
+              <pre><code>function doPost(e) {
+  var p = (e &amp;&amp; e.parameter) || {};
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Inquiries') || ss.insertSheet('Inquiries');
+  sheet.appendRow([new Date(), p.name || '', p.email || '', p.phone || '',
+    p.type || '', p.date || '', p.venue || '', p.guests || '',
+    p.budget || '', p.stage || '', p.dream || '']);
+  MailApp.sendEmail('your-personal-email@example.com',
+    'New WhenWhere inquiry — ' + (p.type || 'event'),
+    'Name: ' + (p.name || '') + '\nEmail: ' + (p.email || '') +
+    '\nEvent date: ' + (p.date || '') + '\n\n' + (p.dream || ''));
+  return ContentService.createTextOutput('ok');
+}</code></pre>
+              <p>Until <code>INQUIRY_ENDPOINT</code> is set, the form keeps its current behaviour below: it builds your inquiry for email / copy / download, and nothing is sent until you send it.</p>
+            </div>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -660,13 +773,14 @@
                   <label><input type="radio" name="stage" value="Just curious" />Just curious</label>
                 </div>
               </div>
-              <button class="btn" type="submit" style="width:100%">Build my inquiry</button>
-              <p style="color:var(--night-muted);font-size:.88rem;margin:12px 0 0">Submitting builds your inquiry below — send it to <a href="mailto:hello@whenwhere.biz" style="color:var(--gold-bright)">hello@whenwhere.biz</a> with one tap, or copy it into any message. Nothing is sent until you say so.</p>
+              <button class="btn" type="submit" id="inquirySubmit" style="width:100%">Send my inquiry</button>
+              <p style="color:var(--night-muted);font-size:.88rem;margin:12px 0 0" id="formModeNote">We reply from our personal email for now — no new inbox to check, and no obligation. This is an inquiry, not a booking.</p>
+              <div class="form-sending" id="formSending" role="status"></div>
             </form>
 
             <div class="result" id="resultPanel" role="status">
               <h3>Your inquiry is ready, <span id="resultName">friend</span> ✦</h3>
-              <p>Open it in your email app addressed to hello@whenwhere.biz, copy it, or download it to send later.</p>
+              <p id="resultFallbackNote">Open it in your email app, copy it, or download it to send later. We&rsquo;ll reply from our personal email.</p>
               <pre id="resultText"></pre>
               <div class="row">
                 <a class="btn" id="mailtoBtn" href="mailto:hello@whenwhere.biz">Open in Email App</a>
@@ -805,9 +919,231 @@
         });
       });
 
+      /* ============ CONFIG — paste your links here to go live ============
+         SHEET_CSV_URL: File > Share > Publish to web > CSV link from your
+                        PUBLIC availability Sheet (Date | Status | Note).
+                        Leave "" to show the labelled sample dates.
+         INQUIRY_ENDPOINT: Web app URL from the Apps Script in the Calendar
+                        setup instructions. Leave "" to keep the
+                        email / copy / download fallback below.          */
+      var WHENWHERE_CONFIG = {
+        SHEET_CSV_URL: "",
+        INQUIRY_ENDPOINT: ""
+      };
+
+      /* ============ Availability calendar (Option A: Sheets-driven grid) ============ */
+      (function () {
+        var grid = document.getElementById('calGrid');
+        if (!grid) return;
+        var statusEl = document.getElementById('calStatus');
+        var monthLabel = document.getElementById('calMonthLabel');
+        var subLabel = document.getElementById('calSubLabel');
+        var detailEl = document.getElementById('calDetail');
+        var prevBtn = document.getElementById('calPrev');
+        var nextBtn = document.getElementById('calNext');
+
+        /* Sample availability ONLY — illustrative, not real bookings.
+           Used when SHEET_CSV_URL is empty or the fetch fails. */
+        var SAMPLE_DATA = {
+          "2026-12-05": { s: "booked", n: "Booked — evening event" },
+          "2026-12-12": { s: "booked", n: "Booked" },
+          "2026-12-19": { s: "hold", n: "On hold — awaiting deposit" },
+          "2026-12-26": { s: "available", n: "Available — holiday weekend" },
+          "2026-12-31": { s: "booked", n: "Booked — New Year's Eve" },
+          "2027-01-02": { s: "hold", n: "On hold" },
+          "2027-01-09": { s: "booked", n: "Booked" },
+          "2027-01-16": { s: "available", n: "Available" },
+          "2027-01-23": { s: "booked", n: "Booked" },
+          "2027-02-06": { s: "hold", n: "On hold" },
+          "2027-02-13": { s: "booked", n: "Booked — Valentine's weekend" },
+          "2027-02-14": { s: "available", n: "Available — Sunday" },
+          "2027-03-06": { s: "booked", n: "Booked" },
+          "2027-03-20": { s: "hold", n: "On hold" }
+        };
+        var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        var data = SAMPLE_DATA;
+        var isLive = false;
+        var cur = { y: 2026, m: 11 };
+        var MIN = { y: 2026, m: 11 }, MAX = { y: 2027, m: 2 };
+        var selected = null;
+
+        function pad(n) { return String(n).padStart(2, "0"); }
+        function key(y, m, d) { return y + "-" + pad(m + 1) + "-" + pad(d); }
+        function label(s) { return s === "booked" ? "Booked" : s === "hold" ? "On hold" : "Available"; }
+        function entry(k) { return data[k] || { s: "available", n: "Available — no hold or booking on this date." }; }
+        function fmtLong(y, m, d) { return DAYS[new Date(y, m, d).getDay()] + " " + d + " " + MONTHS[m] + " " + y; }
+
+        function setStatus(html, live) {
+          statusEl.innerHTML = html;
+          statusEl.classList.toggle('live', !!live);
+        }
+        function sampleStatus(reason) {
+          isLive = false; data = SAMPLE_DATA; MIN = { y: 2026, m: 11 }; MAX = { y: 2027, m: 2 };
+          if (cur.y < MIN.y || (cur.y === MIN.y && cur.m < MIN.m) || cur.y > MAX.y || (cur.y === MAX.y && cur.m > MAX.m)) cur = { y: 2026, m: 11 };
+          setStatus("<strong>Showing sample dates</strong> — December 2026 to March 2027 only, to show how the grid looks. These are <strong>not real bookings</strong>." + (reason ? " " + reason : " Paste your published Sheet link in the setup below the calendar to go live."), false);
+        }
+
+        function clamp() {
+          if (cur.y < MIN.y || (cur.y === MIN.y && cur.m < MIN.m)) cur = { y: MIN.y, m: MIN.m };
+          if (cur.y > MAX.y || (cur.y === MAX.y && cur.m > MAX.m)) cur = { y: MAX.y, m: MAX.m };
+          prevBtn.disabled = (cur.y === MIN.y && cur.m === MIN.m);
+          nextBtn.disabled = (cur.y === MAX.y && cur.m === MAX.m);
+        }
+
+        function showDetail(k) {
+          var p = k.split("-"); var y = +p[0], m = +p[1] - 1, d = +p[2];
+          var e = entry(k);
+          var action = e.s === "available"
+            ? '<br><button type="button" class="btn small" data-check-date="' + k + '">Check this date</button>'
+            : e.s === "hold"
+            ? '<br><span class="note">Worth asking — holds release if the deposit doesn&rsquo;t land.</span><br><button type="button" class="btn small" data-check-date="' + k + '">Ask about this date</button>'
+            : '<br><span class="note">Fully booked — ask about nearby dates instead.</span><br><button type="button" class="btn small" data-check-date="' + k + '">Ask about nearby dates</button>';
+          detailEl.innerHTML = "<b>" + fmtLong(y, m, d) + "</b> · " + label(e.s) + '<br><span class="note">' + e.n.replace(/</g, "&lt;") + "</span>" + action;
+          var btn = detailEl.querySelector('[data-check-date]');
+          if (btn) btn.addEventListener('click', function () {
+            var dateInput = document.getElementById('inDate');
+            if (dateInput) dateInput.value = k;
+            var target = document.getElementById('inquire');
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            var nameInput = document.getElementById('inName');
+            if (nameInput) setTimeout(function () { nameInput.focus({ preventScroll: true }); }, 600);
+          });
+        }
+
+        function render() {
+          clamp();
+          var y = cur.y, m = cur.m;
+          monthLabel.textContent = MONTHS[m] + " " + y;
+          subLabel.textContent = MONTHS[m] + " " + y + " · Charlottesville & Central Virginia" + (isLive ? "" : " · Sample dates");
+          var first = new Date(y, m, 1).getDay();
+          var days = new Date(y, m + 1, 0).getDate();
+          var now = new Date(); var todayK = key(now.getFullYear(), now.getMonth(), now.getDate());
+          grid.innerHTML = "";
+          for (var i = 0; i < first; i++) {
+            var empty = document.createElement('div');
+            empty.className = "cal-cell empty"; empty.setAttribute('aria-hidden', 'true');
+            grid.appendChild(empty);
+          }
+          for (var d = 1; d <= days; d++) {
+            (function (d) {
+              var k = key(y, m, d); var e = entry(k);
+              var b = document.createElement('button');
+              b.type = "button";
+              b.className = "cal-cell is-" + e.s + (k === todayK ? " is-today" : "");
+              b.setAttribute('role', 'gridcell');
+              b.setAttribute('aria-selected', selected === k ? 'true' : 'false');
+              b.setAttribute('aria-label', fmtLong(y, m, d) + ", " + label(e.s));
+              b.innerHTML = '<span class="dnum">' + d + '</span><span class="dstat">' + label(e.s) + '</span>';
+              b.addEventListener('click', function () { selected = k; render(); showDetail(k); });
+              grid.appendChild(b);
+            })(d);
+          }
+        }
+
+        function step(dir) {
+          cur.m += dir;
+          if (cur.m < 0) { cur.m = 11; cur.y--; }
+          if (cur.m > 11) { cur.m = 0; cur.y++; }
+          selected = null;
+          detailEl.textContent = "Tap any date to see its status and what to do next.";
+          render();
+        }
+        prevBtn.addEventListener('click', function () { step(-1); });
+        nextBtn.addEventListener('click', function () { step(1); });
+
+        /* CSV parsing — handles quoted fields, commas and newlines inside quotes */
+        function parseCSV(text) {
+          var rows = [], row = [], field = "", inQ = false;
+          for (var i = 0; i < text.length; i++) {
+            var c = text[i], n = text[i + 1];
+            if (inQ) {
+              if (c === '"' && n === '"') { field += '"'; i++; }
+              else if (c === '"') inQ = false;
+              else field += c;
+            } else if (c === '"') inQ = true;
+            else if (c === ',') { row.push(field); field = ""; }
+            else if (c === '\n' || c === '\r') {
+              if (c === '\r' && n === '\n') i++;
+              row.push(field); field = "";
+              if (row.length > 1 || row[0] !== "") rows.push(row);
+              row = [];
+            } else field += c;
+          }
+          row.push(field);
+          if (row.length > 1 || row[0] !== "") rows.push(row);
+          return rows;
+        }
+        function normDate(s) {
+          s = (s || "").trim();
+          var iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+          if (iso) return iso[1] + "-" + pad(+iso[2]) + "-" + pad(+iso[3]);
+          var us = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+          if (us) return us[3] + "-" + pad(+us[1]) + "-" + pad(+us[2]);
+          var dt = new Date(s);
+          if (!isNaN(dt)) return key(dt.getFullYear(), dt.getMonth(), dt.getDate());
+          return null;
+        }
+        function normStatus(s) {
+          s = (s || "").toLowerCase();
+          if (s.indexOf('book') !== -1) return "booked";
+          if (s.indexOf('hold') !== -1) return "hold";
+          return "available";
+        }
+        function dataFromCSV(text) {
+          var rows = parseCSV(text); var out = {};
+          rows.forEach(function (r, idx) {
+            if (idx === 0 && (r[0] || "").trim().toLowerCase() === 'date') return;
+            var k = normDate(r[0]); if (!k) return;
+            var st = normStatus(r[1]);
+            out[k] = { s: st, n: (r[2] || "").trim() || label(st) };
+          });
+          return out;
+        }
+
+        var url = (WHENWHERE_CONFIG.SHEET_CSV_URL || "").trim();
+        if (!url) {
+          sampleStatus("");
+          render();
+        } else {
+          setStatus("<strong>Loading availability</strong> from your Google Sheet…", false);
+          render();
+          fetch(url, { cache: 'no-store' }).then(function (res) {
+            if (!res.ok) throw new Error('fetch failed');
+            return res.text();
+          }).then(function (text) {
+            data = dataFromCSV(text); isLive = true;
+            var now = new Date();
+            MIN = { y: now.getFullYear(), m: now.getMonth() };
+            var maxD = new Date(now.getFullYear(), now.getMonth() + 11, 1);
+            MAX = { y: maxD.getFullYear(), m: maxD.getMonth() };
+            cur = { y: MIN.y, m: MIN.m };
+            var when = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + " at " + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            setStatus("<strong>Live from your Google Sheet</strong> · updated " + when + " · Only Date, Status and Note are shown — no client details.", true);
+            render();
+          }).catch(function () {
+            sampleStatus("Your Sheet couldn&rsquo;t be loaded just now, so sample dates are shown instead — check the published link in the setup below.");
+            render();
+          });
+        }
+      })();
+
       /* ============ Inquiry form ============ */
       (function () {
         var form = document.getElementById('inquiryForm');
+        /* Reflect which mode the form is in, so the button never over-promises */
+        (function setFormMode() {
+          var ep = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.INQUIRY_ENDPOINT || '').trim();
+          var btn = document.getElementById('inquirySubmit');
+          var note = document.getElementById('formModeNote');
+          if (!ep) {
+            if (btn) btn.textContent = 'Build my inquiry';
+            if (note) note.innerHTML = 'Submitting builds your inquiry below — send it by email, copy it, or download it. Nothing is sent until you say so. We reply from our personal email for now.';
+          } else {
+            if (btn) btn.textContent = 'Send my inquiry';
+            if (note) note.textContent = 'Submitting saves your inquiry to our private Sheet and notifies us — we reply from our personal email, usually within one business day.';
+          }
+        })();
         function val(id) { return document.getElementById(id).value.trim(); }
         function mark(fieldId, bad) { document.getElementById(fieldId).classList.toggle('invalid', bad); return !bad; }
 
@@ -845,9 +1181,45 @@
           document.getElementById('resultName').textContent = val('inName').split(' ')[0];
           var mail = document.getElementById('mailtoBtn');
           mail.href = 'mailto:hello@whenwhere.biz?subject=' + encodeURIComponent('WhenWhere inquiry — ' + val('inType')) + '&body=' + encodeURIComponent(lines);
+
+          var endpoint = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.INQUIRY_ENDPOINT || '').trim();
           var panel = document.getElementById('resultPanel');
-          panel.classList.add('show');
-          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          var sending = document.getElementById('formSending');
+          var submitBtn = document.getElementById('inquirySubmit');
+
+          function showFallback() {
+            panel.classList.add('show');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+
+          if (!endpoint) { showFallback(); return; }
+
+          /* Live mode: POST to the Apps Script endpoint, which appends a row
+             to the private Sheet and emails a notification. Replies come
+             from our personal email. */
+          sending.className = 'form-sending show';
+          sending.textContent = 'Sending your inquiry…';
+          if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+          var params = new URLSearchParams();
+          params.set('name', val('inName')); params.set('email', email);
+          params.set('phone', val('inPhone')); params.set('type', val('inType'));
+          params.set('date', val('inDate')); params.set('venue', val('inVenue'));
+          params.set('guests', val('inGuests')); params.set('budget', val('inBudget'));
+          params.set('stage', stage); params.set('dream', val('inDream'));
+          fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString() })
+            .then(function () {
+              sending.className = 'form-sending show ok';
+              sending.innerHTML = '<strong>Thank you — your inquiry is in.</strong> It&rsquo;s been saved to our private Sheet and we&rsquo;ve been notified. We&rsquo;ll reply from our personal email, usually within one business day.';
+              sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            })
+            .catch(function () {
+              sending.className = 'form-sending show err';
+              sending.textContent = 'That send didn&rsquo;t go through — use the options below to email, copy, or download your inquiry instead.';
+              showFallback();
+            })
+            .finally(function () {
+              if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send my inquiry'; }
+            });
         });
 
         document.getElementById('copyBtn').addEventListener('click', function () {

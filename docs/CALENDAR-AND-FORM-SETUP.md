@@ -122,11 +122,11 @@ private Sheet. The code is also in this repo at
 1. Open your **private** Sheet → **Extensions → Apps Script**.
 2. Replace the default `Code.gs` contents with the contents of
    `docs/apps-script/Code.gs`.
-3. In that code, change exactly one thing:
-   `'your-personal-email@example.com'` → the personal email you want
-   new-inquiry notifications sent to (your personal Gmail).
-   That is the address the notification comes from / to — you reply
-   from it afterwards.
+3. In that code, change exactly one thing: the `NOTIFY_EMAIL` variable
+   near the top — `'your-personal-email@example.com'` → the personal
+   email you want new-inquiry notifications sent to (your personal
+   Gmail). That is the address the notification comes from / to — you
+   reply from it afterwards.
 
 ### 3b. Deploy it as a web app
 

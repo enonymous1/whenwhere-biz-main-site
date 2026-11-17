@@ -4,8 +4,9 @@
  * Paste this whole file into the PRIVATE bookings Sheet:
  *   Extensions → Apps Script, replace the default Code.gs contents.
  *
- * 1. Change 'your-personal-email@example.com' below to the personal
- *    email you want new-inquiry notifications sent to.
+ * 1. Change NOTIFY_EMAIL at the top below to the personal email you
+ *    want new-inquiry notifications sent to. It is the only setting
+ *    in this file — everything else stays as it is.
  * 2. Deploy → New deployment → Web app
  *      Execute as: Me
  *      Who has access: Anyone
@@ -28,6 +29,9 @@
  * → edit the deployment and pick the new version — otherwise the live
  * Web app URL keeps running the old code.
  */
+/* ---- Settings: change this one line, nothing else ---- */
+var NOTIFY_EMAIL = 'your-personal-email@example.com';
+
 function esc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -91,7 +95,7 @@ function doPost(e) {
       + '<tr><td>' + dreamHtml + '</td></tr>' : '')
     + '</table></div>';
 
-  MailApp.sendEmail('your-personal-email@example.com',
+  MailApp.sendEmail(NOTIFY_EMAIL,
     'New WhenWhere inquiry — ' + (p.type || 'event'), text,
     { htmlBody: html, replyTo: p.email || '', name: 'WhenWhere.biz' });
   return ContentService.createTextOutput('ok');

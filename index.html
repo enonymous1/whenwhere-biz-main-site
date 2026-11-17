@@ -546,7 +546,7 @@
     '\nEvent date: ' + (p.date || '') + '\n\n' + (p.dream || ''));
   return ContentService.createTextOutput('ok');
 }</code></pre>
-              <p>Until <code>INQUIRY_ENDPOINT</code> is set, the form keeps its current behaviour below: it builds your inquiry for email / copy / download, and nothing is sent until you send it.</p>
+              <p><code>INQUIRY_ENDPOINT</code> is now set, so submitting the form below saves straight to the private Sheet and emails you — the email / copy / download fallback is no longer used.</p>
             </div>
           </details>
         </div>
@@ -872,7 +872,7 @@
                         email / copy / download fallback below.          */
       var WHENWHERE_CONFIG = {
         SHEET_CSV_URL: "",
-        INQUIRY_ENDPOINT: ""
+        INQUIRY_ENDPOINT: "https://script.google.com/macros/s/AKfycbym4Zgbh9zSy3O08qq5ItEmrrDMUQieOEJFRMxhKAmiWX_KMV1OzDmQi5UnL_t44iZxoA/exec"
       };
 
       /* ============ Availability calendar (Option A: Sheets-driven grid) ============ */

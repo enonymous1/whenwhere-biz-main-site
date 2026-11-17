@@ -535,17 +535,102 @@
               <p>Keep a second, separate Sheet for the real work — client names, venue, package, price, contact details, payment status. Never publish it, never put its link in this page. The public Sheet holds only Date · Status · Note, so the most it can ever show is that a date is booked.</p>
               <p><strong>3 · Inquiry form → private Sheet (Apps Script)</strong></p>
               <p>In your <em>private</em> Sheet: <strong>Extensions → Apps Script</strong>, paste the code below, change the notification address to the personal email you want inquiries sent to, then <strong>Deploy → New deployment → Web app</strong> (execute as Me, access: Anyone). Copy the Web app URL and paste it as <code>INQUIRY_ENDPOINT</code> at the top of the calendar script. From then on this form saves straight to the private Sheet and emails you — you reply from that personal Gmail, with one shared signature. <code>hello@whenwhere.biz</code> stays optional and unconfirmed until you set up a real inbox for it; nothing here depends on it.</p>
-              <pre><code>function doPost(e) {
+              <pre><code>/**
+ * WhenWhere.biz — inquiry form backend (Option A)
+ *
+ * Paste this whole file into the PRIVATE bookings Sheet:
+ *   Extensions → Apps Script, replace the default Code.gs contents.
+ *
+ * 1. Change 'your-personal-email@example.com' below to the personal
+ *    email you want new-inquiry notifications sent to.
+ * 2. Deploy → New deployment → Web app
+ *      Execute as: Me
+ *      Who has access: Anyone
+ * 3. Copy the Web app URL and paste it as INQUIRY_ENDPOINT in
+ *    index.html (WHENWHERE_CONFIG, at the top of the calendar script).
+ * 4. Push the site once. From then on the form saves straight to the
+ *    private Sheet and emails you. Reply from that personal Gmail.
+ *
+ * The script creates an 'Inquiries' tab on first submit if it does
+ * not exist yet. It appends one row per inquiry, in this order:
+ *   Submitted | Name | Email | Phone | Type | Date | Venue |
+ *   Guests | Budget | Stage | Dream/notes
+ *
+ * The notification email is sent twice over: a plain-text body for
+ * clients that can't render HTML, and an htmlBody laid out like the
+ * form itself (Night &amp; Gold, one labelled row per field). Reply-To is
+ * the visitor's email, so Reply in Gmail goes straight to them.
+ *
+ * If you change this code after deploying, Deploy → Manage deployments
+ * → edit the deployment and pick the new version — otherwise the live
+ * Web app URL keeps running the old code.
+ */
+function esc(s) {
+  return String(s || '').replace(/&amp;/g, '&amp;amp;').replace(/&lt;/g, '&amp;lt;')
+    .replace(/&gt;/g, '&amp;gt;').replace(/"/g, '&amp;quot;');
+}
+
+function doPost(e) {
   var p = (e &amp;&amp; e.parameter) || {};
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Inquiries') || ss.insertSheet('Inquiries');
   sheet.appendRow([new Date(), p.name || '', p.email || '', p.phone || '',
     p.type || '', p.date || '', p.venue || '', p.guests || '',
     p.budget || '', p.stage || '', p.dream || '']);
+
+  var fields = [
+    ['Name', p.name], ['Email', p.email], ['Phone', p.phone],
+    ['Here about', p.type], ['Event date', p.date],
+    ['Venue / town', p.venue], ['Expected guests', p.guests],
+    ['Rough budget', p.budget], ['Planning stage', p.stage]
+  ];
+
+  /* Plain-text body — also the fallback for clients without HTML. */
+  var textLines = ['New WhenWhere inquiry — ' + (p.type || 'event'), ''];
+  for (var i = 0; i &lt; fields.length; i++) {
+    var v = (fields[i][1] || '').trim();
+    if (v) textLines.push(fields[i][0] + ': ' + v);
+  }
+  var dream = (p.dream || '').trim();
+  if (dream) textLines.push('', 'About the night:', dream);
+  var text = textLines.join('\n');
+
+  /* HTML body — same fields, laid out like the form. */
+  var rows = '';
+  for (var j = 0; j &lt; fields.length; j++) {
+    var val = (fields[j][1] || '').trim();
+    if (!val) continue;
+    rows += '&lt;tr&gt;&lt;td style="padding:9px 14px 9px 0;vertical-align:top;width:150px;'
+      + 'font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d9a441;'
+      + 'font-weight:700;"&gt;' + esc(fields[j][0]) + '&lt;/td&gt;'
+      + '&lt;td style="padding:9px 0;vertical-align:top;font-size:15px;color:#ffffff;"&gt;'
+      + esc(val) + '&lt;/td&gt;&lt;/tr&gt;';
+  }
+  var dreamHtml = dream
+    ? '&lt;p style="margin:18px 0 0;padding:14px 16px;background:#141a3d;border-radius:8px;'
+      + 'font-size:15px;line-height:1.6;color:#e8ecff;"&gt;' + esc(dream).replace(/\n/g, '&lt;br&gt;') + '&lt;/p&gt;'
+    : '';
+  var html =
+    '&lt;div style="background:#060a1a;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;"&gt;'
+    + '&lt;table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" '
+    + 'style="width:100%;max-width:600px;background:#0d1230;border:1px solid #d9a441;'
+    + 'border-radius:12px;padding:28px 30px;"&gt;'
+    + '&lt;tr&gt;&lt;td style="font-size:11px;letter-spacing:.3em;color:#d9a441;font-weight:700;"&gt;'
+    + 'WHENWHERE.BIZ&lt;/td&gt;&lt;/tr&gt;'
+    + '&lt;tr&gt;&lt;td style="padding:8px 0 4px;font-family:Georgia,serif;font-size:26px;color:#ffffff;"&gt;'
+    + 'New inquiry — ' + esc(p.type || 'event') + '&lt;/td&gt;&lt;/tr&gt;'
+    + '&lt;tr&gt;&lt;td style="padding:0 0 14px;font-size:13px;color:#aab3d6;"&gt;'
+    + 'Saved to your private Sheet &amp;middot; Inquiries tab. Reply from your personal Gmail.&lt;/td&gt;&lt;/tr&gt;'
+    + '&lt;tr&gt;&lt;td&gt;&lt;table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+    + 'style="width:100%;border-top:1px solid #2a3263;"&gt;' + rows + '&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;'
+    + (dream ? '&lt;tr&gt;&lt;td style="padding:16px 0 0;font-size:11px;letter-spacing:.14em;'
+      + 'text-transform:uppercase;color:#d9a441;font-weight:700;"&gt;About the night&lt;/td&gt;&lt;/tr&gt;'
+      + '&lt;tr&gt;&lt;td&gt;' + dreamHtml + '&lt;/td&gt;&lt;/tr&gt;' : '')
+    + '&lt;/table&gt;&lt;/div&gt;';
+
   MailApp.sendEmail('your-personal-email@example.com',
-    'New WhenWhere inquiry — ' + (p.type || 'event'),
-    'Name: ' + (p.name || '') + '\nEmail: ' + (p.email || '') +
-    '\nEvent date: ' + (p.date || '') + '\n\n' + (p.dream || ''));
+    'New WhenWhere inquiry — ' + (p.type || 'event'), text,
+    { htmlBody: html, replyTo: p.email || '', name: 'WhenWhere.biz' });
   return ContentService.createTextOutput('ok');
 }</code></pre>
               <p><code>INQUIRY_ENDPOINT</code> is now set, so submitting the form below saves straight to the private Sheet and emails you — the email / copy / download fallback is no longer used.</p>

@@ -187,6 +187,7 @@
       .cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
       .cal-cell .dnum{font-weight:600;font-size:.95rem;line-height:1.1}
       .cal-cell .dstat{font-size:.58rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.3;overflow-wrap:anywhere}
+      .cal-cell .dnote{font-size:.68rem;line-height:1.3;color:var(--night-ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
       .cal-cell.is-available .dstat{color:var(--mint)}
       .cal-cell.is-hold{background:rgba(217,164,65,.20);border-color:rgba(217,164,65,.55)}
       .cal-cell.is-hold .dstat{color:var(--gold-bright)}
@@ -219,6 +220,7 @@
         .cal-cell{padding:4px 3px;border-radius:7px;aspect-ratio:auto;min-height:56px}
         .cal-cell .dnum{font-size:.82rem}
         .cal-cell .dstat{font-size:.5rem}
+        .cal-cell .dnote{display:none}
         .cal-head .cal-month{font-size:1.2rem;min-width:0}
       }
       /* ---------- reviews empty state ---------- */
@@ -977,8 +979,20 @@
               b.className = "cal-cell is-" + e.s + (k === todayK ? " is-today" : "");
               b.setAttribute('role', 'gridcell');
               b.setAttribute('aria-selected', selected === k ? 'true' : 'false');
-              b.setAttribute('aria-label', fmtLong(y, m, d) + ", " + label(e.s));
-              b.innerHTML = '<span class="dnum">' + d + '</span><span class="dstat">' + label(e.s) + '</span>';
+              /* Show the Sheet note on the cell itself when this date has a
+                 real Sheet row — e.g. "Thanksgiving Day". Dates with no row
+                 keep the plain cell. A leading "Available — " / "Booked — "
+                 prefix is stripped so the status line below doesn't repeat it. */
+              var cellNote = "";
+              if (data[k] && data[k].n) {
+                cellNote = data[k].n;
+                var prefix = label(e.s) + " — ";
+                if (cellNote.indexOf(prefix) === 0) cellNote = cellNote.slice(prefix.length);
+                cellNote = cellNote.trim();
+              }
+              var esc = function (t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
+              b.setAttribute('aria-label', fmtLong(y, m, d) + ", " + label(e.s) + (cellNote ? ", " + cellNote : ""));
+              b.innerHTML = '<span class="dnum">' + d + '</span>' + (cellNote ? '<span class="dnote">' + esc(cellNote) + '</span>' : '') + '<span class="dstat">' + label(e.s) + '</span>';
               b.addEventListener('click', function () { selected = k; render(); showDetail(k); });
               grid.appendChild(b);
             })(d);

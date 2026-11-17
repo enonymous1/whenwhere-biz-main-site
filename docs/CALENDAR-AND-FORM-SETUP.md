@@ -213,6 +213,7 @@ This setup deliberately skips business email for now:
 | Calendar is blank / fetch fails | The CSV link is private or the publish was revoked. The page falls back to sample dates on purpose — check step 1b, then hard-refresh. |
 | Form falls back to email / copy / download | `INQUIRY_ENDPOINT` is empty, or the Apps Script deployment is not live. Check the URL in `index.html`, and in Apps Script → Deploy → Manage deployments that the active version is the latest. |
 | Form submits but no row / no email | The script was not authorised, or the notification email is still the placeholder. In Apps Script, run `doPost` once manually to trigger the authorisation prompt, and check the email address in the code. |
+| Same inquiry sent twice within 5 minutes | By design — the spam guard drops the repeat (same email + event date): no second row, no second email, and the form still shows the thank-you. The first copy is in the Sheet. A different event date, or waiting 5 minutes, goes through. |
 | Old code still running after an edit | You edited the code but did not create a new deployment version. See the note at the end of step 3b. |
 
 ## Files

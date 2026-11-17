@@ -28,6 +28,12 @@
  * If you change this code after deploying, Deploy → Manage deployments
  * → edit the deployment and pick the new version — otherwise the live
  * Web app URL keeps running the old code.
+ *
+ * Spam guard: one inquiry per email + event date per 5 minutes. A
+ * repeat inside that window gets the same 'ok' back, but no second
+ * row and no second email. The form itself also blocks a re-send
+ * from the same browser for 5 minutes — the server check is the one
+ * that can't be bypassed by posting straight at the endpoint.
  */
 /* ---- Settings: change this one line, nothing else ----
    To notify more than one person, list addresses separated by
@@ -42,6 +48,26 @@ function esc(s) {
 
 function doPost(e) {
   var p = (e && e.parameter) || {};
+
+  /* Spam guard — drop a repeat of the same email + event date inside
+     5 minutes. The lock keeps two simultaneous posts from both
+     slipping through; if the lock can't be had, check the cache
+     anyway and carry on (fail open, never drop a real inquiry). */
+  if (p.email) {
+    var throttleKey = 'inq:' + String(p.email).trim().toLowerCase()
+      + '|' + String(p.date || '').trim();
+    var cache = CacheService.getScriptCache();
+    var lock = LockService.getScriptLock();
+    var haveLock = false;
+    try { haveLock = lock.tryLock(5000); } catch (err) { haveLock = false; }
+    try {
+      if (cache.get(throttleKey)) return ContentService.createTextOutput('ok');
+      cache.put(throttleKey, '1', 300);
+    } finally {
+      if (haveLock) { try { lock.releaseLock(); } catch (err2) {} }
+    }
+  }
+
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Inquiries') || ss.insertSheet('Inquiries');
   sheet.appendRow([new Date(), p.name || '', p.email || '', p.phone || '',

@@ -565,6 +565,12 @@
  * If you change this code after deploying, Deploy → Manage deployments
  * → edit the deployment and pick the new version — otherwise the live
  * Web app URL keeps running the old code.
+ *
+ * Spam guard: one inquiry per email + event date per 5 minutes. A
+ * repeat inside that window gets the same 'ok' back, but no second
+ * row and no second email. The form itself also blocks a re-send
+ * from the same browser for 5 minutes — the server check is the one
+ * that can't be bypassed by posting straight at the endpoint.
  */
 /* ---- Settings: change this one line, nothing else ----
    To notify more than one person, list addresses separated by
@@ -579,6 +585,26 @@ function esc(s) {
 
 function doPost(e) {
   var p = (e &amp;&amp; e.parameter) || {};
+
+  /* Spam guard — drop a repeat of the same email + event date inside
+     5 minutes. The lock keeps two simultaneous posts from both
+     slipping through; if the lock can't be had, check the cache
+     anyway and carry on (fail open, never drop a real inquiry). */
+  if (p.email) {
+    var throttleKey = 'inq:' + String(p.email).trim().toLowerCase()
+      + '|' + String(p.date || '').trim();
+    var cache = CacheService.getScriptCache();
+    var lock = LockService.getScriptLock();
+    var haveLock = false;
+    try { haveLock = lock.tryLock(5000); } catch (err) { haveLock = false; }
+    try {
+      if (cache.get(throttleKey)) return ContentService.createTextOutput('ok');
+      cache.put(throttleKey, '1', 300);
+    } finally {
+      if (haveLock) { try { lock.releaseLock(); } catch (err2) {} }
+    }
+  }
+
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Inquiries') || ss.insertSheet('Inquiries');
   sheet.appendRow([new Date(), p.name || '', p.email || '', p.phone || '',
@@ -1181,6 +1207,8 @@ function doPost(e) {
       /* ============ Inquiry form ============ */
       (function () {
         var form = document.getElementById('inquiryForm');
+        var inFlight = false;
+        var COOLDOWN_MS = 5 * 60 * 1000; /* one send per browser per 5 minutes */
         /* Reflect which mode the form is in, so the button never over-promises */
         (function setFormMode() {
           var ep = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.INQUIRY_ENDPOINT || '').trim();
@@ -1199,6 +1227,7 @@ function doPost(e) {
 
         form.addEventListener('submit', function (ev) {
           ev.preventDefault();
+          if (inFlight) return; /* double-click / double-Enter while sending */
           var ok = true;
           ok = mark('f-name', !val('inName')) && ok;
           var email = val('inEmail');
@@ -1244,9 +1273,22 @@ function doPost(e) {
 
           if (!endpoint) { showFallback(); return; }
 
+          /* Spam guard (browser side): one send per browser per 5 minutes.
+             The server enforces the same window, so this is just the
+             friendly version — no second POST at all. */
+          var lastSent = 0;
+          try { lastSent = +localStorage.getItem('wwLastInquiry') || 0; } catch (e) { lastSent = 0; }
+          if (Date.now() - lastSent < COOLDOWN_MS) {
+            sending.className = 'form-sending show ok';
+            sending.innerHTML = '<strong>Your inquiry is already in.</strong> It was sent a few minutes ago — we&rsquo;ve got it, and we&rsquo;ll reply from our personal email, usually within one business day.';
+            sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            return;
+          }
+
           /* Live mode: POST to the Apps Script endpoint, which appends a row
              to the private Sheet and emails a notification. Replies come
              from our personal email. */
+          inFlight = true;
           sending.className = 'form-sending show';
           sending.textContent = 'Sending your inquiry…';
           if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
@@ -1258,6 +1300,7 @@ function doPost(e) {
           params.set('stage', stage); params.set('dream', val('inDream'));
           fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString() })
             .then(function () {
+              try { localStorage.setItem('wwLastInquiry', String(Date.now())); } catch (e) {}
               sending.className = 'form-sending show ok';
               sending.innerHTML = '<strong>Thank you — your inquiry is in.</strong> It&rsquo;s been saved to our private Sheet and we&rsquo;ve been notified. We&rsquo;ll reply from our personal email, usually within one business day.';
               sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1268,6 +1311,7 @@ function doPost(e) {
               showFallback();
             })
             .finally(function () {
+              inFlight = false;
               if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send my inquiry'; }
             });
         });

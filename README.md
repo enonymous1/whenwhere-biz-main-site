@@ -50,9 +50,9 @@ real bookings.
 
 ## Preview
 
-`index.html` is a single self-contained file (photos inlined) — open
-it in a browser, or serve the folder so paths resolve exactly as they
-will on Pages:
+`index.html` plus the `assets/` photos beside it — open it in a
+browser, or serve the folder so paths resolve exactly as they will on
+Pages:
 
 ```bash
 python3 -m http.server 8000
@@ -114,7 +114,8 @@ whenwhere-biz-main-site/
 │   ├── calendar-sample.csv          # the 14 sample dates shown before setup
 │   └── apps-script/
 │       └── Code.gs                  # Apps Script doPost for the private Sheet
-├── index.html                  # the page (self-contained, ~4.3 MB)
+├── index.html                  # the page
+├── assets/                     # photos (hero, barn, ceremony, dancing, drone-hearts)
 ├── README.md
 └── LICENSE                     # © 2026 WhenWhere.biz, all rights reserved
 ```

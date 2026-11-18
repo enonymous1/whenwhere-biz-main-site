@@ -113,9 +113,8 @@ inquiry inbox.
 ## 3 · Inquiry form → private Sheet (Apps Script)
 
 The form posts to a tiny Apps Script web app that lives in your
-private Sheet. The code is also in this repo at
-`docs/apps-script/Code.gs` — it is the same code shown in the
-“set up the live Sheet & inquiry backend” panel on the site itself.
+private Sheet. The code lives in this repo at
+`docs/apps-script/Code.gs` — copy that file into the private Sheet.
 
 ### 3a. Install the script
 

@@ -57,6 +57,12 @@
       .nav-links{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
       .nav-links a{color:#cfd7ff;text-decoration:none;font-size:.95rem;padding:9px 10px}
       .nav-links a:hover{color:#fff}
+        .nav-toggle{display:none;background:none;border:1px solid #33407a;border-radius:9px;padding:12px 11px;cursor:pointer;flex-direction:column;gap:5px;align-items:center;justify-content:center}
+        .nav-toggle span{display:block;width:22px;height:2px;background:#d9a441;border-radius:1px;transition:transform .2s ease,opacity .2s ease}
+        .nav-toggle:focus-visible{outline:2px solid #d9a441;outline-offset:2px}
+        .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+        .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+        .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
       .btn{display:inline-block;border:0;cursor:pointer;text-decoration:none;font-family:"Jost",sans-serif;font-weight:600;font-size:1rem;padding:13px 26px;border-radius:999px;background:var(--gold-bright);color:#191203;transition:transform .15s ease, background .15s ease;min-height:44px}
       .btn:hover{background:#eec26a;transform:translateY(-1px)}
       .btn.small{padding:9px 18px;font-size:.92rem;min-height:38px}
@@ -249,11 +255,12 @@
       @media (max-width: 1100px){
         .nav-in{flex-wrap:wrap}
         .nav-links{order:3;width:100%;margin-left:0}
+        .nav-cta{margin-left:auto}
       }
       @media (max-width:960px){
         .nav-links{gap:2px}
         .nav-links a{padding:7px 6px;font-size:.85rem}
-        .nav-links .btn.small{padding:8px 12px;font-size:.85rem}
+        .nav-cta{padding:8px 12px;font-size:.85rem}
       }
       @media (max-width: 960px){
         .cards{grid-template-columns:1fr 1fr}
@@ -273,9 +280,15 @@
         .nav-in{gap:10px;padding:10px 14px}
         .brand{font-size:1rem;min-width:0}
         .brand small{letter-spacing:.12em;font-size:.55rem}
+        .brand small{display:none}
         .nav-links{gap:2px;flex-wrap:wrap}
         .nav-links a{padding:7px 8px;font-size:.88rem}
-        .nav-links .btn.small{padding:8px 13px;font-size:.85rem;white-space:nowrap}
+        .nav-cta{padding:8px 13px;font-size:.85rem;white-space:nowrap}
+        .nav-toggle{display:inline-flex}
+        .nav-links{display:none}
+        .nav-links.open{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;padding:6px 0 2px}
+        .nav-links.open a{padding:12px 4px;border-top:1px solid #33407a}
+        .nav-links.open a:first-child{border-top:0}
         form.inquiry{padding:20px}
       }
       @media (prefers-reduced-motion: reduce){
@@ -288,7 +301,7 @@
     <nav aria-label="Page">
       <div class="nav-in">
         <a class="brand" href="#home">When<em>Where</em>.biz<small>Charlottesville &amp; Central Virginia</small></a>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
           <a href="#home">Home</a>
           <a href="#gallery">Gallery</a>
           <a href="#services">Services</a>
@@ -298,8 +311,9 @@
           <a href="#reviews">Reviews</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
-          <a class="btn small" href="#inquire">Start an inquiry</a>
         </div>
+        <a class="btn small nav-cta" href="#inquire">Start an inquiry</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </nav>
 
@@ -1206,6 +1220,22 @@
           document.body.appendChild(a); a.click();
           setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 400);
         });
+      })();
+    </script>
+    <script>
+      (function () {
+        /* Mobile nav: hamburger toggle. */
+        var btn = document.querySelector('.nav-toggle');
+        var links = document.getElementById('navLinks');
+        if (!btn || !links) return;
+        function setOpen(open) {
+          links.classList.toggle('open', open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        btn.addEventListener('click', function () { setOpen(!links.classList.contains('open')); });
+        links.addEventListener('click', function (ev) { if (ev.target.closest('a')) setOpen(false); });
+        document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setOpen(false); });
+        window.addEventListener('resize', function () { if (window.innerWidth > 620) setOpen(false); });
       })();
     </script>
   </body>

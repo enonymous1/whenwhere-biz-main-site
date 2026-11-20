@@ -4,7 +4,7 @@ The main site for WhenWhere.biz: weddings & events plus drone light
 shows, for Charlottesville and Central Virginia. It is the page the
 drone light shows page links home to.
 
-**Live demo (planned):** <https://enonymous1.github.io/whenwhere-biz-main-site/>
+**Live:** <https://enonymous1.github.io/whenwhere-biz-main-site/>
 — GitHub Pages, deployed from this repo (see [Deployment](#deployment)).
 
 ## What is on the page
@@ -20,33 +20,49 @@ drone light shows page links home to.
   site's existing photos.
 - **Drone light shows** — a featured lane with a live canvas sky that
   cycles hearts → rings → starburst, linking out to
-  <https://whenwhere.biz/drone-light-shows/>.
+  <https://enonymous1.github.io/whenwhere-drone-light-shows/> (the
+  drone page's own home; it moves to whenwhere.biz/drone-light-shows/
+  when the full site does).
 - **About** — About Us, Our Story, and Meet The Team. The team cards
   are placeholders until real names and photos are added.
 - **Calendar — Option A, Sheets-driven** — a month grid in the site's
   own style showing Available / Hold / Booked, with a legend. Tap a
   date for its detail, then “Check this date” prefills the inquiry
-  form with that date. It reads a published Google Sheet CSV when
-  `SHEET_CSV_URL` is set (see
-  [Calendar & form setup](docs/CALENDAR-AND-FORM-SETUP.md)); until
-  then it shows clearly-labelled sample dates for Dec 2026–Mar 2027
-  and says so. Seasonal lead-time guidance sits below the grid.
+  form with that date. It reads the published Google Sheet CSV live
+  (`SHEET_CSV_URL` is set — see
+  [Calendar & form setup](docs/CALENDAR-AND-FORM-SETUP.md)); if the
+  Sheet cannot be loaded it falls back to clearly-labelled sample
+  dates for Dec 2026–Mar 2027 and says so. Seasonal lead-time
+  guidance sits below the grid.
 - **One shared inquiry form** — lane buttons pre-fill it (wedding date
   check, drone 2027 date), and tapping a calendar date prefills the
-  event date. When `INQUIRY_ENDPOINT` is set, submitting saves the
-  inquiry to a private Google Sheet and emails your personal Gmail
-  (Apps Script — see the setup guide); you reply from that personal
-  email. Until then it keeps the mailto / copy / download fallback:
-  submitting builds a formatted inquiry the visitor can open in
-  their email app addressed to `hello@whenwhere.biz`, copy, or
-  download. `hello@whenwhere.biz` is unconfirmed and optional —
-  nothing in the calendar or form depends on it.
+  event date. It is connected (`INQUIRY_ENDPOINT` is set): submitting
+  saves the inquiry to a private Google Sheet and emails your personal
+  Gmail (Apps Script — see the setup guide); you reply from that
+  personal email. If the endpoint were ever unset, the fallback is
+  copy / download only — there is no mailto, and no email address is
+  listed anywhere on the page.
 
 Honest placeholders, kept on purpose: Reviews is a "reviews on their
 way" placeholder rather than invented testimonials, and the team cards
 carry no invented names or photos. The calendar's sample dates are
-labelled sample-only until a real Sheet is connected — they are not
-real bookings.
+labelled sample-only — they are not real bookings.
+
+## Screenshots
+
+Captured from the page at 1280×900 in dark mode (the page follows the
+OS; the shots below are the dark rendering, which is where the themed
+scrollbar shows). The hero is a plain viewport screenshot of the top
+of the page; the section shots scroll the section into view first —
+for sections with no top padding, leave room for the sticky nav or
+the heading hides behind it. Serve the folder over HTTP first so the
+photos and fonts load.
+
+![Hero — the vineyard ceremony photo and headline](docs/screenshots/hero.jpg)
+
+![Drone light shows — the live canvas sky, here showing the wedding rings](docs/screenshots/drones.png)
+
+![Calendar — the month grid, here on the labelled sample dates](docs/screenshots/calendar.png)
 
 ## Preview
 
@@ -112,6 +128,10 @@ whenwhere-biz-main-site/
 ├── docs/
 │   ├── CALENDAR-AND-FORM-SETUP.md   # Sheets + Apps Script setup, testing, troubleshooting
 │   ├── calendar-sample.csv          # the 14 sample dates shown before setup
+│   ├── screenshots/                 # hero, drone section, calendar (for this README)
+│   │   ├── hero.jpg
+│   │   ├── drones.png
+│   │   └── calendar.png
 │   └── apps-script/
 │       └── Code.gs                  # Apps Script doPost for the private Sheet
 ├── index.html                  # the page

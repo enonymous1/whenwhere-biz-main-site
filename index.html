@@ -39,6 +39,11 @@
       }
       *{box-sizing:border-box}
       html{scroll-behavior:smooth}
+      html{scrollbar-width:thin;scrollbar-color:var(--line) var(--bg)}
+      ::-webkit-scrollbar{width:10px}
+      ::-webkit-scrollbar-track{background:var(--bg)}
+      ::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--bg)}
+      ::-webkit-scrollbar-thumb:hover{background:var(--gold-bright)}
       body{margin:0;background:var(--bg);color:var(--ink);font-family:"Jost",system-ui,sans-serif;font-size:17px;line-height:1.6}
       h1,h2,h3,.display{font-family:"Marcellus",Georgia,serif;font-weight:400;line-height:1.15;margin:0}
       img{max-width:100%;display:block}

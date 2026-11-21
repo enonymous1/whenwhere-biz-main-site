@@ -127,6 +127,7 @@ whenwhere-biz-main-site/
 │       └── pages.yml           # deploy on push to main
 ├── docs/
 │   ├── CALENDAR-AND-FORM-SETUP.md   # Sheets + Apps Script setup, testing, troubleshooting
+│   ├── INQUIRY-PIPELINE.md          # inquiry-to-booking workflow, visitor + manager views
 │   ├── calendar-sample.csv          # the 14 sample dates shown before setup
 │   ├── screenshots/                 # hero, drone section, calendar (for this README)
 │   │   ├── hero.jpg

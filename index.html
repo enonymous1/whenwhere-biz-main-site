@@ -68,7 +68,7 @@
         .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
         .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
         .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-      .btn{display:inline-block;border:0;cursor:pointer;text-decoration:none;font-family:"Jost",sans-serif;font-weight:600;font-size:1rem;padding:13px 26px;border-radius:999px;background:var(--gold-bright);color:#191203;transition:transform .15s ease, background .15s ease;min-height:44px}
+      .btn{display:inline-block;border:0;cursor:pointer;text-decoration:none;text-align:center;font-family:"Jost",sans-serif;font-weight:600;font-size:1rem;padding:13px 26px;border-radius:999px;background:var(--gold-bright);color:#191203;transition:transform .15s ease, background .15s ease;min-height:44px}
       .btn:hover{background:#eec26a;transform:translateY(-1px)}
       .btn.small{padding:9px 18px;font-size:.92rem;min-height:38px}
       .btn.ghost{background:transparent;color:#fff;border:1px solid #4a579a}
@@ -311,6 +311,7 @@
           <a href="#gallery">Gallery</a>
           <a href="#services">Services</a>
           <a href="#weddings">Weddings &amp; Events</a>
+          <a href="https://enonymous1.github.io/whenwhere-drone-light-shows/">Drone Light Shows</a>
           <a href="#calendar">Calendar</a>
           <a href="#faq">FAQ</a>
           <a href="#reviews">Reviews</a>
@@ -781,47 +782,138 @@
         for (var i = 0; i < 90; i++) stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.3 + .3, p: Math.random() * Math.PI * 2 });
         var COLORS = ['#ffd166', '#8fd8ff', '#ff7d9c', '#7dffcb', '#c9a7ff', '#ffffff', '#ffb36b'];
 
-        function sample(drawFn) {
-          var off = document.createElement('canvas');
-          off.width = W; off.height = H;
-          var o = off.getContext('2d');
-          o.fillStyle = '#fff'; o.strokeStyle = '#fff';
-          drawFn(o);
-          var img;
-          try { img = o.getImageData(0, 0, W, H).data; } catch (e) { return []; }
-          var pts = [], step = 20;
-          for (var y = step / 2; y < H; y += step) {
-            for (var x = step / 2; x < W; x += step) {
-              if (img[(Math.floor(y) * W + Math.floor(x)) * 4 + 3] > 110) pts.push({ x: x, y: y });
-            }
+        /* ---- Geometry, ported from the drone light shows page (studio.js) ----
+           so this preview draws the same shapes the studio does. The old
+           version rasterised each shape on a 20px grid, which put the dots
+           on grid intersections instead of evenly along the outline — the
+           rings came out blocky and the starburst sparse. Outline shapes
+           are now placed evenly along their true contour by arc length.
+           If the studio's geometry changes, port the change here too. */
+        function cubic(p0, p1, p2, p3, n) {
+          var pts = [];
+          for (var i = 0; i <= n; i++) {
+            var t = i / n, u = 1 - t;
+            pts.push({ x: u*u*u*p0.x + 3*u*u*t*p1.x + 3*u*t*t*p2.x + t*t*t*p3.x,
+                       y: u*u*u*p0.y + 3*u*u*t*p1.y + 3*u*t*t*p2.y + t*t*t*p3.y });
           }
           return pts;
         }
-        function heartPath(o, cx, cy, s) {
-          o.beginPath();
-          o.moveTo(cx, cy + s * .85);
-          o.bezierCurveTo(cx - s * 1.5, cy - s * .1, cx - s * .75, cy - s * 1.15, cx, cy - s * .35);
-          o.bezierCurveTo(cx + s * .75, cy - s * 1.15, cx + s * 1.5, cy - s * .1, cx, cy + s * .85);
-          o.closePath(); o.fill();
+        function resample(pts, n) {
+          var L = [0];
+          for (var i = 1; i < pts.length; i++) L.push(L[i-1] + Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y));
+          var total = L[L.length-1];
+          if (!total || n <= 0) return [];
+          var out = [], j = 0;
+          for (var k = 0; k < n; k++) {
+            var d = total * k / n;
+            while (j < L.length-2 && L[j+1] < d) j++;
+            var seg = (L[j+1]-L[j]) || 1, f = (d-L[j])/seg;
+            out.push({ x: pts[j].x + (pts[j+1].x-pts[j].x)*f, y: pts[j].y + (pts[j+1].y-pts[j].y)*f });
+          }
+          return out;
         }
+        function circlePts(cx, cy, r, n, squash) {
+          var pts = [];
+          for (var i = 0; i < n; i++) { var a = i/n*Math.PI*2 - Math.PI/2; pts.push({ x: cx+Math.cos(a)*r, y: cy+Math.sin(a)*r*(squash||1) }); }
+          return pts;
+        }
+        function heartDense(cx, cy, s) {
+          var tip = { x: cx, y: cy + s * .85 };
+          var dense = cubic(tip, {x:cx-s*1.5,y:cy-s*.1}, {x:cx-s*.75,y:cy-s*1.15}, {x:cx,y:cy-s*.35}, 48);
+          dense = dense.concat(cubic({x:cx,y:cy-s*.35}, {x:cx+s*.75,y:cy-s*1.15}, {x:cx+s*1.5,y:cy-s*.1}, tip, 48).slice(1));
+          return dense;
+        }
+        function runLen(r) { var L = 0; for (var i = 1; i < r.length; i++) L += Math.hypot(r[i].x-r[i-1].x, r[i].y-r[i-1].y); return L; }
+        function resampleRuns(pts, n) {
+          var runs = [[]];
+          for (var i = 0; i < pts.length; i++) {
+            if (i && Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y) > 25) runs.push([]);
+            runs[runs.length-1].push(pts[i]);
+          }
+          runs = runs.filter(function (r) { return r.length > 1; });
+          if (!runs.length) return resample(pts, n);
+          var lens = runs.map(runLen), total = lens.reduce(function (a, b) { return a+b; }, 0);
+          if (!total) return resample(pts, n);
+          var shares = lens.map(function (L) { return Math.max(1, Math.floor(n*L/total)); });
+          var sum = shares.reduce(function (a, b) { return a+b; }, 0);
+          var order = lens.map(function (L, i) { return i; }).sort(function (a, b) { return lens[b]-lens[a]; });
+          var k = 0, guard = 0;
+          while (sum < n && guard++ < 100) { shares[order[k % order.length]]++; sum++; k++; }
+          while (sum > n && guard++ < 100) { var idx = order[k % order.length]; if (shares[idx] > 1) { shares[idx]--; sum--; } k++; }
+          var out = [];
+          runs.forEach(function (r, i) { out = out.concat(resample(r, shares[i])); });
+          return out;
+        }
+        function heartPair(n) {
+          var s = 100;
+          function tilt(dense, cx, cy, a) { var co = Math.cos(a), si = Math.sin(a); return dense.map(function (p) { var dx = p.x-cx, dy = p.y-cy; return { x: cx+dx*co-dy*si, y: cy+dx*si+dy*co }; }); }
+          var cA = { x: W*.42, y: H*.45 }, cB = { x: W*.58, y: H*.55 };
+          var dA = tilt(heartDense(cA.x, cA.y, s), cA.x, cA.y, .18);
+          var dB = tilt(heartDense(cB.x, cB.y, s), cB.x, cB.y, -.18);
+          function nearest(p, arr) { var m = Infinity; for (var i = 0; i < arr.length; i++) { var d = (p.x-arr[i].x)*(p.x-arr[i].x) + (p.y-arr[i].y)*(p.y-arr[i].y); if (d < m) m = d; } return Math.sqrt(m); }
+          function centroid(list) { if (!list.length) return null; var sx = 0, sy = 0; list.forEach(function (p) { sx += p.x; sy += p.y; }); return { x: sx/list.length, y: sy/list.length }; }
+          var candIdx = [];
+          dA.forEach(function (p, i) { if (nearest(p, dB) < 12) candIdx.push(i); });
+          var clusters = [];
+          candIdx.forEach(function (i) { var last = clusters[clusters.length-1]; if (last && i - last[last.length-1] <= 8) last.push(i); else clusters.push([i]); });
+          var crossings = clusters.map(function (idxs) { return centroid(idxs.map(function (i) { return dA[i]; })); }).filter(Boolean);
+          for (var m = 0; m < crossings.length - 1; m++) {
+            if (Math.hypot(crossings[m+1].x-crossings[m].x, crossings[m+1].y-crossings[m].y) < 40) {
+              crossings[m] = { x: (crossings[m].x+crossings[m+1].x)/2, y: (crossings[m].y+crossings[m+1].y)/2 };
+              crossings.splice(m+1, 1); m--;
+            }
+          }
+          function gap(dense, centers, r) { return dense.filter(function (p) { return centers.every(function (c) { var d = (p.x-c.x)*(p.x-c.x) + (p.y-c.y)*(p.y-c.y); return d > r*r; }); }); }
+          var h = Math.floor(n/2);
+          var gapsA = [], gapsB = [];
+          crossings.forEach(function (c, k) { if (k % 2 === 0) gapsA.push(c); else gapsB.push(c); });
+          var left = resampleRuns(gap(dA, gapsA, 30), h), right = resampleRuns(gap(dB, gapsB, 30), n-h);
+          left.forEach(function (p, i) { p.c = PALETTES.heart[i % PALETTES.heart.length]; });
+          right.forEach(function (p, i) { p.c = PALETTES.rings[i % PALETTES.rings.length]; });
+          return left.concat(right);
+        }
+        function starPts(n) {
+          var cx = W/2, cy = H/2, verts = [];
+          for (var k = 0; k < 12; k++) {
+            var a = k*Math.PI/6 - Math.PI/2;
+            verts.push({ x: cx+Math.cos(a)*165, y: cy+Math.sin(a)*165*.82 });
+            var a2 = a + Math.PI/12;
+            verts.push({ x: cx+Math.cos(a2)*95, y: cy+Math.sin(a2)*95*.82 });
+          }
+          verts.push(verts[0]);
+          return resample(verts, n);
+        }
+        function ringsPts(n) {
+          var per = Math.floor((n - 12) / 2);
+          var pts = circlePts(W*.42, H*.52, 105, per).concat(circlePts(W*.58, H*.52, 105, n - 12 - per));
+          var gx = W*.58, gy = H*.52 - 105 - 30;
+          var gem = [{x:gx,y:gy-30},{x:gx+26,y:gy},{x:gx,y:gy+30},{x:gx-26,y:gy},{x:gx,y:gy-30}];
+          return pts.concat(resample(gem, 12));
+        }
+        var PALETTES = {
+          heart: ['#ff7d9c', '#ff4d6d', '#ffb3c1', '#ffffff'],
+          rings: ['#ffd166', '#e3b356', '#fff3c4', '#ffffff'],
+          star: ['#ffd166', '#ff7d9c', '#8fd8ff', '#ffffff']
+        };
         var SHAPES = [
-          { name: 'Interlocking hearts', draw: function (o) { heartPath(o, W * .38, H * .46, 105); heartPath(o, W * .60, H * .52, 105); } },
-          { name: 'Wedding rings', draw: function (o) { o.lineWidth = 26; o.beginPath(); o.arc(W * .42, H * .52, 105, 0, Math.PI * 2); o.stroke(); o.beginPath(); o.arc(W * .58, H * .52, 105, 0, Math.PI * 2); o.stroke(); } },
-          { name: 'Starburst finale', draw: function (o) { var cx = W / 2, cy = H / 2, i, a, r; o.lineWidth = 16; o.beginPath(); for (i = 0; i < 24; i++) { a = i * Math.PI / 12 - Math.PI / 2; r = (i % 2 ? 78 : 168); if (i === 0) o.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); else o.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); } o.closePath(); o.stroke(); o.beginPath(); o.arc(cx, cy, 30, 0, Math.PI * 2); o.fill(); } }
+          { name: 'Interlocking hearts', points: heartPair, count: 80, palette: PALETTES.heart },
+          { name: 'Wedding rings', points: ringsPts, count: 100, palette: PALETTES.rings },
+          { name: 'Starburst finale', points: starPts, count: 200, palette: PALETTES.star }
         ];
 
         var drones = [], startTime = 0, shapeIdx = 0, cycleTimer = null;
         function setFormation(idx) {
           shapeIdx = idx;
-          var pts = sample(SHAPES[idx].draw);
-          nameEl.textContent = SHAPES[idx].name;
+          var shape = SHAPES[idx];
+          var pts = shape.points(shape.count);
+          nameEl.textContent = shape.name;
           countEl.textContent = pts.length + ' drones in this sketch';
           drones = pts.map(function (p, i2) {
             var old = drones[i2];
             return {
               sx: old ? old.x : Math.random() * W, sy: old ? old.y : H + 30 + Math.random() * 120,
               x: old ? old.x : Math.random() * W, y: old ? old.y : H + 30,
-              tx: p.x, ty: p.y, d: Math.random() * .55, c: COLORS[i2 % COLORS.length], ph: Math.random() * Math.PI * 2
+              tx: p.x, ty: p.y, d: Math.random() * .55, c: p.c || (shape.palette || COLORS)[i2 % (shape.palette || COLORS).length], ph: Math.random() * Math.PI * 2
             };
           });
           startTime = performance.now();
@@ -843,8 +935,8 @@
             d.y = d.sy + (d.ty - d.sy) * e + Math.sin(t * 1.8 + d.ph) * (lt >= 1 ? 1.6 : 0);
             ctx.globalAlpha = .75 + .25 * Math.sin(t * 3 + d.ph);
             ctx.fillStyle = d.c;
-            ctx.shadowColor = d.c; ctx.shadowBlur = 9;
-            ctx.beginPath(); ctx.arc(d.x, d.y, 3.4, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowColor = d.c; ctx.shadowBlur = 12;
+            ctx.beginPath(); ctx.arc(d.x, d.y, 4.2, 0, Math.PI * 2); ctx.fill();
           });
           ctx.globalAlpha = 1; ctx.shadowBlur = 0;
           if (!reduced) requestAnimationFrame(draw);

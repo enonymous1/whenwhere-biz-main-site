@@ -1,0 +1,418 @@
+{
+  "about-heading": {
+    "text": "About Us"
+  },
+  "about-intro": {
+    "text": "Finding inspiration in every turn. WhenWhere is an event production company based in Charlottesville, serving weddings and private events across Central Virginia — the DJ & MC, the sound, the lighting, and, from 2027, the sky itself."
+  },
+  "about-kicker": {
+    "text": "About"
+  },
+  "about-story-1": {
+    "text": "WhenWhere started with a simple observation: the nights people remember aren’t the ones with the fanciest kit — they’re the ones where everything just <em>worked</em>. The vows landed clearly at the back row. The speeches were crisp. Dinner flowed into dancing without a gap, and the floor never emptied."
+  },
+  "about-story-2": {
+    "text": "So we built one team to own all of it — DJ & MC flow, multi-zone audio for vineyards and remote sites, and lighting that turns a barn into a ballroom — under a single contract and a single point of contact, with backup gear for everything that matters. No hand-offs, no gaps, no awkward silences."
+  },
+  "about-story-3": {
+    "text": "In 2027 we add our newest chapter: drone light shows, writing couples’ initials, dates, and logos in light above their guests. Same crew, same obsession — a bigger canvas."
+  },
+  "about-story-title": {
+    "text": "Our Story"
+  },
+  "about-team-intro": {
+    "text": "The people behind the heartbeat. Full names and portraits are on their way — here’s who does what on your night."
+  },
+  "about-team-title": {
+    "text": "Meet The Team"
+  },
+  "cal-heading": {
+    "text": "Check your date"
+  },
+  "cal-intro": {
+    "text": "A quick look at which dates are open, on hold, or booked — then send an inquiry and we’ll confirm your exact date personally. Only a date, a status, and a short public note are ever shown here — never client names, venues, or prices."
+  },
+  "cal-kicker": {
+    "text": "Calendar · Availability"
+  },
+  "cal-tip-1-desc": {
+    "text": "Fall Saturdays in vineyard country and UVA alumni weekends are the most requested dates of the year. If your heart is set on one, ask as early as you can — even a rough date holds your place in the conversation."
+  },
+  "cal-tip-1-title": {
+    "text": "Peak season goes first"
+  },
+  "cal-tip-2-desc": {
+    "text": "Most couples reach out months ahead so we can build the run-of-show with their planner and caterer. Shorter notice isn’t impossible — it depends on the date and the venue, so it’s always worth asking."
+  },
+  "cal-tip-2-title": {
+    "text": "Weddings & events"
+  },
+  "cal-tip-3-desc": {
+    "text": "Drone light shows need extra lead time for custom design and airspace authorisations. The 2027 founding-season interest list is open now, with priority dates for early inquiries."
+  },
+  "cal-tip-3-title": {
+    "text": "Drone shows · 2027"
+  },
+  "drone-cta-1": {
+    "text": "Explore drone light shows →"
+  },
+  "drone-cta-2": {
+    "text": "Check your 2027 date"
+  },
+  "drone-heading": {
+    "text": "Your story, written in light across the sky"
+  },
+  "drone-intro": {
+    "text": "Dozens of synchronised drones paint your initials, your logo, your date — animated, in full colour, above your guests. It’s the newest thing WhenWhere does, and it already has its own home."
+  },
+  "drone-kicker": {
+    "text": "Drone Light Shows · New for 2027"
+  },
+  "drone-li-1": {
+    "text": "Custom artwork — initials, rings, dates, logos — designed with you and previewed as an animation before show night"
+  },
+  "drone-li-2": {
+    "text": "Weddings, vineyards, UVA alumni weekends, corporate events, festivals and proposals"
+  },
+  "drone-li-3": {
+    "text": "No fire, no debris, no noise to spook the horses — flies where fireworks can’t"
+  },
+  "drone-li-4": {
+    "text": "Founding-season interest list for 2027 is open now, with priority dates for early inquiries"
+  },
+  "drone-note": {
+    "text": "A simplified sketch of how a show is choreographed — try the full Formation Studio, with your own words, on the <a href=\"https://enonymous1.github.io/whenwhere-drone-light-shows/\" style=\"color:var(--gold-bright)\">drone light shows site</a>."
+  },
+  "faq-1-a": {
+    "text": "Two things, one team: DJ & MC and full event production for weddings and private events, and drone light shows, launching with a 2027 founding season. Book one, or stack them — a wedding with a drone finale is our favourite kind of night."
+  },
+  "faq-1-q": {
+    "text": "What exactly does WhenWhere do?"
+  },
+  "faq-2-a": {
+    "text": "Charlottesville and Central Virginia are home — Albemarle County, the Blue Ridge foothills, and the vineyard and estate country around them. Further afield in Virginia? Ask in the inquiry and we’ll talk."
+  },
+  "faq-2-q": {
+    "text": "Where do you work?"
+  },
+  "faq-3-a": {
+    "text": "As early as you can — fall Saturdays and UVA alumni weekends go first, and drone shows need extra lead time for design and airspace authorisations. Even a rough date in the inquiry below holds your place in the conversation."
+  },
+  "faq-3-q": {
+    "text": "How far ahead should we book?"
+  },
+  "faq-4-a": {
+    "text": "It depends on the event — venue, guest count, production, and how custom you want it — so everything is quoted individually rather than off a one-size price list. Send the inquiry with a rough budget and we’ll tell you honestly what it can do."
+  },
+  "faq-4-q": {
+    "text": "How much does it cost?"
+  },
+  "faq-5-a": {
+    "text": "Yes — venues and planners are some of our favourite people. Choose “Venue or planner — partnership” in the form below and tell us about your property or your clients."
+  },
+  "faq-5-q": {
+    "text": "We’re a venue or a planner — can we partner?"
+  },
+  "faq-heading": {
+    "text": "Before you ask"
+  },
+  "faq-kicker": {
+    "text": "Questions"
+  },
+  "footer-link-drone": {
+    "text": "Drone Light Shows →"
+  },
+  "footer-text": {
+    "text": "WhenWhere.biz — event production, DJ & MC and drone light shows · Charlottesville & Central Virginia"
+  },
+  "form-heading": {
+    "text": "One form, every kind of night"
+  },
+  "form-intro": {
+    "text": "Wedding, private event, drone show, or both at once — tell us the shape of it and we’ll come back with availability and a first read on your venue, usually within one business day."
+  },
+  "form-kicker": {
+    "text": "Start Here"
+  },
+  "form-label-budget": {
+    "text": "Rough budget"
+  },
+  "form-label-date": {
+    "text": "Event date <span class=\"opt\">(or best guess)</span>"
+  },
+  "form-label-dream": {
+    "text": "Tell us about the night"
+  },
+  "form-label-email": {
+    "text": "Email *"
+  },
+  "form-label-guests": {
+    "text": "Expected guests"
+  },
+  "form-label-name": {
+    "text": "Your name *"
+  },
+  "form-label-phone": {
+    "text": "Phone <span class=\"opt\">(optional)</span>"
+  },
+  "form-label-stage": {
+    "text": "Where are you in planning?"
+  },
+  "form-label-type": {
+    "text": "I’m here about *"
+  },
+  "form-label-venue": {
+    "text": "Venue / town <span class=\"opt\">(optional)</span>"
+  },
+  "form-li-1": {
+    "text": "No obligation — this is an inquiry, not a booking"
+  },
+  "form-li-2": {
+    "text": "Drone inquiries join the 2027 founding-season list"
+  },
+  "form-li-3": {
+    "text": "Weddings & events across Central Virginia"
+  },
+  "form-li-4": {
+    "text": "Planning a surprise? Say so and we’ll keep it quiet"
+  },
+  "gallery-caption-barn": {
+    "text": "Barn receptions, warmed with light"
+  },
+  "gallery-caption-ceremony": {
+    "text": "Ceremony sound, clear in the open air"
+  },
+  "gallery-caption-dancing": {
+    "text": "The dance floor nobody wants to leave"
+  },
+  "gallery-caption-drone": {
+    "text": "Drone light shows — new for 2027"
+  },
+  "gallery-caption-hero": {
+    "text": "Vineyard evenings in the Blue Ridge foothills"
+  },
+  "gallery-heading": {
+    "text": "Nights we’ve lit"
+  },
+  "gallery-intro": {
+    "text": "Vineyard evenings, barn receptions, ceremonies under open sky — and now, stories written in light above it all. A look at the settings and moments WhenWhere is built for."
+  },
+  "gallery-kicker": {
+    "text": "Gallery"
+  },
+  "hero-cta-1": {
+    "text": "Start an inquiry"
+  },
+  "hero-cta-2": {
+    "text": "Explore what we do"
+  },
+  "hero-headline": {
+    "text": "Tell us <span class=\"gold\">when</span>.<br />Tell us <span class=\"gold\">where</span>.<br />We’ll bring the night."
+  },
+  "hero-kicker": {
+    "text": "WhenWhere.biz · Event Production · Charlottesville & Central Virginia"
+  },
+  "hero-meta-1": {
+    "text": "Weddings · Vineyards · UVA Alumni · Private Estates"
+  },
+  "hero-meta-2": {
+    "text": "Drone shows — 2027 founding season"
+  },
+  "hero-meta-3": {
+    "text": "Based in Charlottesville, VA"
+  },
+  "hero-subhead": {
+    "text": "One team for the whole evening — wedding DJ & MC, sound and lighting that make a barn feel like a ballroom, and now drone light shows writing your story across the sky."
+  },
+  "img-barn": {
+    "image": "assets/barn.jpg",
+    "alt": "A barn reception warmed by golden uplighting as guests celebrate"
+  },
+  "img-ceremony": {
+    "image": "assets/ceremony.jpg",
+    "alt": "Ceremony sound set up outdoors at a Virginia venue, ready for guests"
+  },
+  "img-dancing": {
+    "image": "assets/dancing.jpg",
+    "alt": "Guests dancing under warm party lighting at a celebration"
+  },
+  "img-drone-hearts": {
+    "image": "assets/drone-hearts.jpg",
+    "alt": "Three glowing hearts formed by drones, reflected in a lake at night"
+  },
+  "img-hero": {
+    "image": "assets/hero.jpg",
+    "alt": "A Virginia vineyard estate glowing at dusk beneath the Blue Ridge mountains, set up for an evening celebration"
+  },
+  "lane-drone-cta": {
+    "text": "Visit the drone shows site →"
+  },
+  "lane-drone-desc": {
+    "text": "Your initials, your date, your logo — animated in light above your guests by a fleet of synchronised drones. The finale nobody stops talking about, from the team already running your party."
+  },
+  "lane-drone-li-1": {
+    "text": "Custom formations, designed with you"
+  },
+  "lane-drone-li-2": {
+    "text": "Weddings, vineyards, alumni & festivals"
+  },
+  "lane-drone-li-3": {
+    "text": "Interest list for 2027 now open"
+  },
+  "lane-drone-tag": {
+    "text": "New · 2027 Founding Season"
+  },
+  "lane-drone-title": {
+    "text": "Drone light shows"
+  },
+  "lane-wed-cta": {
+    "text": "See wedding services"
+  },
+  "lane-wed-desc": {
+    "text": "DJ & MC, ceremony audio, and lighting for weddings and private events across Central Virginia — one team owns your sound, your lights, and your timeline from the first guest’s arrival to the last song."
+  },
+  "lane-wed-li-1": {
+    "text": "Wedding DJ & MC flow"
+  },
+  "lane-wed-li-2": {
+    "text": "Vineyard & remote-site audio"
+  },
+  "lane-wed-li-3": {
+    "text": "Ambiance & dance-floor lighting"
+  },
+  "lane-wed-tag": {
+    "text": "Weddings & Events"
+  },
+  "lane-wed-title": {
+    "text": "Your party, produced"
+  },
+  "manifesto-1": {
+    "text": "At <span class=\"accent\">WHEN & WHERE</span>, our goal is to provide the heartbeat to your celebration."
+  },
+  "manifesto-2": {
+    "text": "Long after the final toast is raised and the last song is played, what you—and your guests—will remember most is how the night <em>felt</em>."
+  },
+  "manifesto-3": {
+    "text": "From the laughter carrying across the room, to the clarity of the speeches, and the magnetic pull of a dance floor that nobody wants to leave, our ambition is to make an evening that will resonate for a lifetime."
+  },
+  "rev-cta": {
+    "text": "Share your experience"
+  },
+  "rev-desc": {
+    "text": "WhenWhere is a new name for this work, and we’d rather show you nothing than dress up words nobody said. As our first wedding and event seasons under this name wrap up, real reviews from real clients will live here — unedited and in their own words."
+  },
+  "rev-heading": {
+    "text": "Word of mouth is the whole idea"
+  },
+  "rev-kicker": {
+    "text": "Reviews"
+  },
+  "rev-note": {
+    "text": "Hosted a night with us already? We’d be grateful for yours."
+  },
+  "rev-title": {
+    "text": "Reviews are on their way"
+  },
+  "services-heading": {
+    "text": "Two ways to have a night"
+  },
+  "services-intro": {
+    "text": "Everything WhenWhere does comes back to the same two questions — when, and where. Pick your lane; the same crew, the same production standards, and the same obsession with the dance floor run through both."
+  },
+  "services-kicker": {
+    "text": "Services · Start Here"
+  },
+  "team-1-desc": {
+    "text": "Owns the run-of-show and the room — music curation, pacing, and the voice guiding your guests from first arrival to last song."
+  },
+  "team-1-name": {
+    "text": "Name coming soon"
+  },
+  "team-1-role": {
+    "text": "Founder · Lead DJ & MC"
+  },
+  "team-2-desc": {
+    "text": "Sound and lighting across vineyards, barns, and estates — load-in routes, power quirks, and redundant systems, handled before guests arrive."
+  },
+  "team-2-name": {
+    "text": "Name coming soon"
+  },
+  "team-2-role": {
+    "text": "Production Lead"
+  },
+  "team-3-desc": {
+    "text": "Designs and flies the 2027 founding-season light shows — custom formations previewed with you as an animation before show night."
+  },
+  "team-3-name": {
+    "text": "Name coming soon"
+  },
+  "team-3-role": {
+    "text": "Drone Show Lead"
+  },
+  "wed-cta": {
+    "text": "Check your wedding date"
+  },
+  "wed-heading": {
+    "text": "Production that disappears — so the party doesn’t have to"
+  },
+  "wed-intro": {
+    "text": "Central Virginia’s best venues weren’t built for modern production. We’ve run sound at them anyway — load-in routes, power quirks, and noise ordinances handled before your guests arrive. No hand-offs, no gaps, no awkward silences."
+  },
+  "wed-kicker": {
+    "text": "Weddings & Private Events"
+  },
+  "wed-svc-1-desc": {
+    "text": "Custom-curated music that sounds like you, pacing that keeps the night moving, and an MC who guides the room without ever stealing it. We build your run-of-show with your planner and caterer and cue every transition."
+  },
+  "wed-svc-1-title": {
+    "text": "Wedding DJ & MC flow"
+  },
+  "wed-svc-2-desc": {
+    "text": "Vows at the top of the vineyard, cocktails on the terrace, dinner in the barn. Multi-zone systems put clear sound exactly where your guests are — even where there’s no power."
+  },
+  "wed-svc-2-title": {
+    "text": "Vineyard & remote audio"
+  },
+  "wed-svc-3-desc": {
+    "text": "Light is the fastest way to make a barn feel like a ballroom. Wireless uplighting and dance-floor washes shift the room from golden hour to late night as the energy builds."
+  },
+  "wed-svc-3-title": {
+    "text": "Ambiance & lighting"
+  },
+  "wed-svc-4-desc": {
+    "text": "Add a drone light show to the reception and the same team times it into your timeline — first dance, send-off, or the moment dinner ends and the party begins."
+  },
+  "wed-svc-4-title": {
+    "text": "And the sky, if you want it"
+  },
+  "why-1-desc": {
+    "text": "DJ, MC, sound, lighting — and now the sky — under a single point of contact. Nothing falls between vendors because there’s only one vendor."
+  },
+  "why-1-title": {
+    "text": "One team, one contract"
+  },
+  "why-2-desc": {
+    "text": "Every critical piece travels in duplicate: two sound systems, two laptops, backup controllers, spare microphones, supplemental battery power. A failure becomes a thirty-second swap your guests won’t notice."
+  },
+  "why-2-title": {
+    "text": "Redundant everything"
+  },
+  "why-3-desc": {
+    "text": "Estates, vineyards, barns and fairgrounds across Albemarle and Central Virginia — we know where the outlets are, and where they aren’t."
+  },
+  "why-3-title": {
+    "text": "Venue-fluent crews"
+  },
+  "why-4-desc": {
+    "text": "We build the run-of-show with your planner and caterer, cue every transition, and keep the night on rails — so the only thing you have to watch is the sunset over the Blue Ridge."
+  },
+  "why-4-title": {
+    "text": "A timeline that runs itself"
+  },
+  "why-heading": {
+    "text": "Reliable is a system, not a promise"
+  },
+  "why-kicker": {
+    "text": "Why WhenWhere"
+  }
+}

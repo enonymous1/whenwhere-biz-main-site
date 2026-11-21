@@ -86,6 +86,56 @@ URL as `INQUIRY_ENDPOINT` in `WHENWHERE_CONFIG` at the top of the
 calendar script in `index.html`, push once. After that, editing the
 Sheet updates the calendar with no redeploy.
 
+## Editing the site content (Google Sheets)
+
+The page's text and photos are editable from a Google Sheet — no
+code changes and no redeploy for copy edits. The page reads the
+Sheet (published as CSV) and overrides the matching text and images;
+the text baked into `index.html` stays as the fallback, so the page
+is unchanged if the Sheet is unreachable.
+
+**How it works:** every editable bit of copy is tagged in the HTML
+with `data-content="key"` (text) or `data-content-img="key"` (an
+`<img>`). A small loader at the end of the script block fetches the
+content and applies it. The content source is `CONTENT_CSV_URL` in
+`WHENWHERE_CONFIG`; when it is blank the page reads `content.json`
+beside `index.html` instead. Blank cells are ignored, so a
+half-filled Sheet never wipes text.
+
+**The Sheet** has four columns — `key | text | image | alt` — one row
+per item. Text rows fill in `text`; image rows fill in `image` (a
+filename in `assets/`, e.g. `assets/hero.jpg`, or a full URL) and
+`alt` (the accessibility description). Image size is set by the
+page's CSS, not the Sheet. A few rows keep markup in `text` — the
+hero headline and a handful of labels — and those must keep their
+`<span>` / `<br />` / `<a>` tags when edited; everything else is
+plain text. `docs/content.csv` is the current Sheet contents in CSV
+form (137 rows) — paste it into a new Sheet to start.
+
+**To connect a Sheet:**
+
+1. Create a new Google Sheet (one per site) and paste in
+   `docs/content.csv` — File → Import → Upload, or paste the rows.
+2. File → Share → Publish to web → choose the Sheet, format CSV,
+   Publish. Copy the link.
+3. Paste the link as `CONTENT_CSV_URL` in `WHENWHERE_CONFIG` in
+   `index.html` and push once. After that, editing the Sheet updates
+   the page with no redeploy (the page fetches with `no-store`, so
+   edits show on the next load).
+
+**What is and isn't in the Sheet:** the marketing copy (hero,
+gallery, services, weddings, drone section, why, calendar intro,
+FAQ, reviews, about, team, form labels, footer) and the five photos.
+Not in it: the nav labels, the submit button and form note (both are
+set by the form's mode in JS), the send-failure result panel, the
+validation messages, and the calendar's own status strings — those
+are app behaviour, not copy. To add a new editable bit later, tag
+the element with `data-content="new-key"` (or `data-content-img`),
+add the row to the Sheet and to `content.json`, and the loader picks
+it up. Swapping the back-end later (for example to a CMS that emits
+the same `key → {text, image, alt}` map) only means changing how the
+map is fetched — the override mechanism stays the same.
+
 ## Deployment
 
 Hosted on GitHub Pages via GitHub Actions — free, fast, versioned in
@@ -129,13 +179,15 @@ whenwhere-biz-main-site/
 │   ├── CALENDAR-AND-FORM-SETUP.md   # Sheets + Apps Script setup, testing, troubleshooting
 │   ├── INQUIRY-PIPELINE.md          # inquiry-to-booking workflow, visitor + manager views
 │   ├── calendar-sample.csv          # the 14 sample dates shown before setup
+│   ├── content.csv                  # the Sheet contents (key | text | image | alt), 137 rows
 │   ├── screenshots/                 # hero, drone section, calendar (for this README)
 │   │   ├── hero.jpg
 │   │   ├── drones.png
 │   │   └── calendar.png
 │   └── apps-script/
 │       └── Code.gs                  # Apps Script doPost for the private Sheet
-├── index.html                  # the page
+├── index.html                  # the page (content tagged data-content / data-content-img)
+├── content.json                # the page content, local fallback for the Sheet
 ├── assets/                     # photos (hero, barn, ceremony, dancing, drone-hearts)
 ├── README.md
 └── LICENSE                     # © 2026 WhenWhere.biz, all rights reserved

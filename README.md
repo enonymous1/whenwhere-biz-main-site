@@ -177,6 +177,7 @@ whenwhere-biz-main-site/
 │       └── pages.yml           # deploy on push to main
 ├── docs/
 │   ├── CALENDAR-AND-FORM-SETUP.md   # Sheets + Apps Script setup, testing, troubleshooting
+│   ├── CONTENT-EDITING.md           # how to edit the site's text + photos in the Sheet
 │   ├── INQUIRY-PIPELINE.md          # inquiry-to-booking workflow, visitor + manager views
 │   ├── calendar-sample.csv          # the 14 sample dates shown before setup
 │   ├── content.csv                  # the Sheet contents (key | text | image | alt), 137 rows

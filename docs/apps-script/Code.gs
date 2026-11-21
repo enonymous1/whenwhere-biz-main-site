@@ -82,6 +82,11 @@ function doPost(e) {
     p.type || '', p.date || '', p.venue || '', p.guests || '',
     p.budget || '', p.stage || '', p.dream || '']);
 
+  /* Link back to the Inquiries tab, for the full history — it goes in
+     the notification email (plain text + HTML) so one click opens the
+     Sheet at the row this inquiry just landed in. */
+  var sheetUrl = ss.getUrl().split('#')[0] + '#gid=' + sheet.getSheetId();
+
   var fields = [
     ['Name', p.name], ['Email', p.email], ['Phone', p.phone],
     ['Here about', p.type], ['Event date', p.date],
@@ -97,6 +102,7 @@ function doPost(e) {
   }
   var dream = (p.dream || '').trim();
   if (dream) textLines.push('', 'About the night:', dream);
+  textLines.push('', 'View all inquiries in the Sheet: ' + sheetUrl);
   var text = textLines.join('\n');
 
   /* HTML body — same fields, laid out like the form. */
@@ -130,6 +136,8 @@ function doPost(e) {
     + (dream ? '<tr><td style="padding:16px 0 0;font-size:11px;letter-spacing:.14em;'
       + 'text-transform:uppercase;color:#d9a441;font-weight:700;">About the night</td></tr>'
       + '<tr><td>' + dreamHtml + '</td></tr>' : '')
+    + '<tr><td style="padding:18px 0 0;font-size:14px;">'
+      + '<a href="' + esc(sheetUrl) + '" style="color:#d9a441;">View all inquiries in the private Sheet &rarr;</a></td></tr>'
     + '</table></div>';
 
   MailApp.sendEmail(NOTIFY_EMAIL,

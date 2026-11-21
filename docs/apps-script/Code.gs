@@ -16,9 +16,13 @@
  *    private Sheet and emails you. Reply from that personal Gmail.
  *
  * The script creates an 'Inquiries' tab on first submit if it does
- * not exist yet. It appends one row per inquiry, in this order:
+ * not exist yet, and writes the header row (below) when the tab is
+ * empty. It appends one row per inquiry, in this order:
  *   Submitted | Name | Email | Phone | Type | Date | Venue |
  *   Guests | Budget | Stage | Dream/notes
+ * If the tab already has rows with no headers, insert a row at the
+ * top of the Sheet and type those labels in — the script only writes
+ * headers to an empty tab, it never rewrites row 1.
  *
  * The notification email is sent twice over: a plain-text body for
  * clients that can't render HTML, and an htmlBody laid out like the
@@ -70,6 +74,10 @@ function doPost(e) {
 
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Inquiries') || ss.insertSheet('Inquiries');
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Submitted', 'Name', 'Email', 'Phone', 'Type', 'Date',
+      'Venue', 'Guests', 'Budget', 'Stage', 'Dream/notes']);
+  }
   sheet.appendRow([new Date(), p.name || '', p.email || '', p.phone || '',
     p.type || '', p.date || '', p.venue || '', p.guests || '',
     p.budget || '', p.stage || '', p.dream || '']);

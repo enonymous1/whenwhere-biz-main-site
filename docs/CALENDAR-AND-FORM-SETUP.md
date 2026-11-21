@@ -104,9 +104,14 @@ inquiry inbox.
 2. **Never** Publish-to-web this one, and never put its link in
    `index.html`.
 3. The form backend (step 3) will create an `Inquiries` tab in it
-   automatically on the first submit. You can add your own tabs
+   automatically on the first submit, and writes its header row
+   (`Submitted | Name | Email | Phone | Type | Date | Venue | Guests
+   | Budget | Stage | Dream/notes`) when the tab is empty. If your
+   `Inquiries` tab already has rows with no headers, insert a row at
+   the top yourself — right-click row 1 → **Insert 1 row above** —
+   and type those labels in. You can add your own tabs
    (e.g. `Bookings`, `Payments`) alongside it — the script only
-   touches `Inquiries`.
+   touches `Inquiries`, so their headers are yours to type.
 
 ---
 

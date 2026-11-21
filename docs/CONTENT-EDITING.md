@@ -50,12 +50,32 @@ This site has **two** Google Sheets, and they do different jobs:
 
 | Sheet | What it holds | Who edits it |
 |---|---|---|
-| **Content Sheet** (this doc) | The words and photos on the page | Anyone with the link |
+| **Content Sheet** (this doc) | The words and photos on the page | Only the accounts added as Editors (see below) |
 | **Public availability Sheet** | The calendar dates (`Date \| Status \| Note`) | The manager, for bookings |
 
 The calendar reads the availability Sheet; everything else on the page
 reads the content Sheet. A date change goes in the availability Sheet,
 a wording change goes in the content Sheet.
+
+### Who can edit the Sheet
+
+The published CSV link is **read-only** — anyone who finds it can read
+the site's current copy (the same words already public on the website),
+but they cannot change anything through it. Editing is controlled
+separately, by the Sheet's **Share** settings. Lock it down like this:
+
+1. Open the Sheet → **Share** (top right).
+2. Under **General access**, choose **Restricted** — "Only people
+   added can open".
+3. Add the accounts that should be able to edit (your Gmail, and
+   anyone else who edits copy) and set each to **Editor**.
+4. Leave **File → Share → Publish to web** turned on — that's the
+   read-only copy the page fetches, and restricting Share does not
+   turn it off or break the page.
+
+If the Sheet is ever set to "Anyone with the link can edit", then
+anyone who gets the Sheet's edit link can change the site's copy.
+Keep it Restricted.
 
 ## The editor's view — changing copy
 

@@ -8,7 +8,15 @@
 # One-time setup (repo owner): Settings -> Pages -> Build and deployment
 # -> Source: GitHub Actions. Then push to main and watch this run.
 #
-# The deploy job only uploads the public site files (index.html,
+# Jobs are split on purpose — validate, then build, then deploy — and
+# build and deploy are separate jobs, not two steps in one job. A single
+# job that uploads and deploys hit GitHub's "Found 0 artifact(s)" failure
+# even though the artifact had uploaded fine (the same transient broke
+# the coming-soon site's single-job workflow three times before it was
+# split). The split is the durable fix; a failed deploy job can also just
+# be re-run on its own.
+#
+# The build job only uploads the public site files (index.html,
 # content.json, assets/) — docs/ (setup guides, Code.gs) is not served.
 # The validate job gates every deploy on the page's scripts parsing and
 # the data file being valid JSON.
@@ -55,12 +63,9 @@ jobs:
           print(f'validate ok: {len(scripts)} scripts, content.json parses, endpoint x2')
           EOF
 
-  deploy:
+  build:
     needs: validate
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -79,6 +84,13 @@ jobs:
         with:
           path: 'site'
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

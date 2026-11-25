@@ -1,4 +1,7 @@
 <!doctype html>
+<!-- WhenWhere.biz main site — reviewed copy, 2026-11-25 (see REVIEW.md).
+     Fixes R1–R29 applied; design, copy, photos and endpoint URLs are
+     unchanged in effect. Original repo untouched — apply only on go-ahead. -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -9,6 +12,21 @@
     <meta name="description" content="WhenWhere is Charlottesville & Central Virginia's event production team: wedding DJ & MC, vineyard audio and lighting, and drone light shows for the 2027 founding season." />
     <link rel="canonical" href="https://whenwhere.biz/" />
     <meta name="theme-color" content="#060a1a" />
+    <!-- R21: CSP as a meta tag (the drone site already has one; this page had
+         none). Inline scripts/styles force 'unsafe-inline' here — a header
+         CSP without it would need the JS externalised first. connect-src is
+         the load-bearing part: it allow-lists the Google endpoints the page
+         fetches. NOTE the *.googleusercontent.com wildcard: both Sheets
+         publish links and Apps Script web apps 302-redirect there, and a
+         CSP listing only docs.google.com / script.google.com silently
+         breaks both fetches (caught in verification — see REVIEW.md). -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src https://fonts.gstatic.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://script.google.com; form-action https://script.google.com https://script.googleusercontent.com; base-uri 'self'" />
+    <meta property="og:image:width" content="2200" />
+    <meta property="og:image:height" content="2933" />
+    <meta name="twitter:image" content="https://whenwhere.biz/assets/hero.jpg" />
+    <!-- R20: hero is the LCP element — preload it so the browser does not
+         discover it only after parsing the whole <style> block. -->
+    <link rel="preload" as="image" href="assets/hero.jpg" fetchpriority="high" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="WhenWhere.biz — Weddings, Events &amp; Drone Light Shows · Charlottesville &amp; Central Virginia" />
     <meta property="og:description" content="Charlottesville &amp; Central Virginia's event production team: wedding DJ &amp; MC, vineyard audio and lighting, and drone light shows for the 2027 founding season." />
@@ -25,7 +43,8 @@
       :root{
         --bg:#faf7f0; --surface:#ffffff; --surface2:#f1ebdf;
         --ink:#141a2e; --muted:#59617a; --line:#e0d8c8;
-        --gold:#a97b16; --gold-bright:#d9a441;
+      /* R10: light gold darkened from #a97b16 (3.55:1) to #8a610a (5.17:1) for WCAG AA. */
+        --gold:#8a610a; --gold-bright:#d9a441;
         --night:#060a1a; --night2:#0b1130; --night-ink:#eef1ff; --night-muted:#a9b2d8;
         --sky:#8fd8ff; --rose:#ff7d9c; --mint:#7dffcb;
         --radius:14px;
@@ -38,7 +57,9 @@
         }
       }
       *{box-sizing:border-box}
-      html{scroll-behavior:smooth}
+      /* R8: scroll-padding keeps anchored sections clear of the sticky nav. */
+      html{scroll-behavior:smooth;scroll-padding-top:84px}
+      section[id],header[id]{scroll-margin-top:84px}
       html{scrollbar-width:thin;scrollbar-color:var(--line) var(--bg)}
       ::-webkit-scrollbar{width:10px}
       ::-webkit-scrollbar-track{background:var(--bg)}
@@ -54,7 +75,8 @@
       h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:14px}
       .lede{color:var(--muted);max-width:64ch;font-size:1.08rem}
       /* ---------- nav ---------- */
-      nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb, var(--night) 92%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid #232c58}
+      /* R9: solid background first — older browsers drop color-mix and would leave the nav transparent. */
+      nav{position:sticky;top:0;z-index:50;background:#060a1a;background:color-mix(in srgb, var(--night) 92%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid #232c58}
       .nav-in{display:flex;align-items:center;gap:18px;max-width:none;margin:0;padding:12px 28px}
       .brand{color:#fff;text-decoration:none;font-family:"Marcellus",serif;font-size:1.15rem;letter-spacing:.04em;white-space:nowrap}
       .brand em{font-style:normal;color:var(--gold-bright)}
@@ -139,7 +161,8 @@
       summary{cursor:pointer;padding:16px 20px;font-weight:600;font-size:1.02rem;list-style:none;display:flex;justify-content:space-between;gap:14px;min-height:44px;align-items:center}
       summary::-webkit-details-marker{display:none}
       summary::after{content:"+";color:var(--gold);font-size:1.3rem;line-height:1}
-      details[open ] summary::after{content:"–"}
+      /* R22: was 'details[open ]' — the space inside the brackets made the selector match nothing. */
+      details[open] summary::after{content:"–"}
       details .a{padding:0 20px 18px;color:var(--muted)}
       details .a p{margin:0}
       /* ---------- form ---------- */
@@ -208,7 +231,8 @@
       .cal-cell:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
       .cal-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none}
       .cal-cell .dnum{font-weight:600;font-size:.95rem;line-height:1.1}
-      .cal-cell .dstat{font-size:.58rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.3}
+      /* R25: cell status text raised from .58rem/.42rem — it was below readable size on a phone. */
+      .cal-cell .dstat{font-size:.66rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;line-height:1.3}
       .cal-cell .dnote{font-size:.68rem;line-height:1.3;color:var(--night-ink);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
       .cal-cell.is-available .dstat{color:var(--mint)}
       .cal-cell.is-hold{background:rgba(217,164,65,.20);border-color:rgba(217,164,65,.55)}
@@ -217,6 +241,8 @@
       .cal-cell.is-booked .dstat{color:var(--night-muted)}
       .cal-cell.is-booked .dnum{text-decoration:line-through;text-decoration-color:var(--gold-bright)}
       .cal-cell.is-today{outline:2px solid var(--gold-bright);outline-offset:1px}
+      .cal-cell.is-past{opacity:.45;cursor:not-allowed}
+      .cal-cell.is-past:hover{border-color:rgba(255,255,255,.14)}
       .cal-cell[aria-selected="true"]{box-shadow:0 0 0 2px var(--gold-bright) inset}
       .cal-legend{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:16px;font-size:.82rem;color:var(--night-muted)}
       .cal-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px;vertical-align:-1px}
@@ -241,7 +267,7 @@
         .cal-grid,.cal-dow{gap:3px}
         .cal-cell{padding:4px 3px;border-radius:7px;aspect-ratio:auto;min-height:56px}
         .cal-cell .dnum{font-size:.82rem}
-        .cal-cell .dstat{font-size:.42rem;letter-spacing:0}
+        .cal-cell .dstat{font-size:.55rem;letter-spacing:0}
         .cal-cell .dnote{display:none}
         .cal-head .cal-month{font-size:1.2rem;min-width:0}
       }
@@ -316,7 +342,7 @@
           <a href="#faq">FAQ</a>
           <a href="#reviews">Reviews</a>
           <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+          <a href="#inquire">Contact</a>
         </div>
         <a class="btn small nav-cta" href="#inquire">Start an inquiry</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -324,7 +350,7 @@
     </nav>
 
     <header class="hero" id="home">
-      <img decoding="async" class="bg" src="assets/hero.jpg" alt="A Virginia vineyard estate glowing at dusk beneath the Blue Ridge mountains, set up for an evening celebration" data-content-img="img-hero" />
+      <img decoding="async" fetchpriority="high" loading="eager" width="1600" height="900" class="bg" src="assets/hero.jpg" alt="A Virginia vineyard estate glowing at dusk beneath the Blue Ridge mountains, set up for an evening celebration" data-content-img="img-hero" />
       <div class="shade"></div>
       <div class="wrap hero-in">
         <p class="kicker" data-content="hero-kicker">WhenWhere.biz · Event Production · Charlottesville &amp; Central Virginia</p>
@@ -332,7 +358,7 @@
         <p class="sub" data-content="hero-subhead">One team for the whole evening — wedding DJ &amp; MC, sound and lighting that make a barn feel like a ballroom, and now drone light shows writing your story across the sky.</p>
         <div class="hero-ctas">
           <a class="btn" href="#inquire" data-content="hero-cta-1">Start an inquiry</a>
-          <a class="btn ghost" href="#lanes" data-content="hero-cta-2">Explore what we do</a>
+          <a class="btn ghost" href="#services" data-content="hero-cta-2">Explore what we do</a>
         </div>
         <div class="hero-meta">
           <span data-content="hero-meta-1">Weddings · Vineyards · UVA Alumni · Private Estates</span>
@@ -363,30 +389,29 @@
         <p class="lede" data-content="gallery-intro">Vineyard evenings, barn receptions, ceremonies under open sky — and now, stories written in light above it all. A look at the settings and moments WhenWhere is built for.</p>
         <div class="gallery">
           <figure class="wide">
-            <img decoding="async" src="assets/hero.jpg" alt="A Virginia vineyard estate glowing at dusk beneath the Blue Ridge mountains, set up for an evening celebration" loading="lazy" data-content-img="img-hero" />
+            <img decoding="async" width="1600" height="900" src="assets/hero.jpg" alt="A Virginia vineyard estate glowing at dusk beneath the Blue Ridge mountains, set up for an evening celebration" loading="lazy" data-content-img="img-hero" />
             <figcaption data-content="gallery-caption-hero">Vineyard evenings in the Blue Ridge foothills</figcaption>
           </figure>
           <figure>
-            <img decoding="async" src="assets/barn.jpg" alt="A barn reception warmed by golden uplighting as guests celebrate" loading="lazy" data-content-img="img-barn" />
+            <img decoding="async" src="assets/barn.jpg" alt="A barn reception warmed by golden uplighting as guests celebrate" loading="lazy" data-content-img="img-barn" width="1024" height="1024" />
             <figcaption data-content="gallery-caption-barn">Barn receptions, warmed with light</figcaption>
           </figure>
           <figure>
-            <img decoding="async" src="assets/ceremony.jpg" alt="Ceremony sound set up outdoors at a Virginia venue, ready for guests" loading="lazy" data-content-img="img-ceremony" />
+            <img decoding="async" src="assets/ceremony.jpg" alt="Ceremony sound set up outdoors at a Virginia venue, ready for guests" loading="lazy" data-content-img="img-ceremony" width="1000" height="750" />
             <figcaption data-content="gallery-caption-ceremony">Ceremony sound, clear in the open air</figcaption>
           </figure>
           <figure>
-            <img decoding="async" src="assets/dancing.jpg" alt="Guests dancing under warm party lighting at a celebration" loading="lazy" data-content-img="img-dancing" />
+            <img decoding="async" src="assets/dancing.jpg" alt="Guests dancing under warm party lighting at a celebration" loading="lazy" data-content-img="img-dancing" width="1200" height="800" />
             <figcaption data-content="gallery-caption-dancing">The dance floor nobody wants to leave</figcaption>
           </figure>
           <figure>
-            <img decoding="async" src="assets/drone-hearts.jpg" alt="Three glowing hearts formed by drones, reflected in a lake at night" loading="lazy" data-content-img="img-drone-hearts" />
+            <img decoding="async" src="assets/drone-hearts.jpg" alt="Three glowing hearts formed by drones, reflected in a lake at night" loading="lazy" data-content-img="img-drone-hearts" width="1536" height="1024" />
             <figcaption data-content="gallery-caption-drone">Drone light shows — new for 2027</figcaption>
           </figure>
         </div>
       </div>
     </section>
 
-    <span id="lanes"></span>
     <section id="services" style="padding-top:0">
       <div class="wrap">
         <p class="kicker" data-content="services-kicker">Services · Start Here</p>
@@ -394,7 +419,7 @@
         <p class="lede" data-content="services-intro">Everything WhenWhere does comes back to the same two questions — when, and where. Pick your lane; the same crew, the same production standards, and the same obsession with the dance floor run through both.</p>
         <div class="cards">
           <article class="card">
-            <img decoding="async" src="assets/barn.jpg" alt="A barn reception warmed by golden uplighting as guests celebrate" loading="lazy" data-content-img="img-barn" />
+            <img decoding="async" src="assets/barn.jpg" alt="A barn reception warmed by golden uplighting as guests celebrate" loading="lazy" data-content-img="img-barn" width="1024" height="1024" />
             <div class="pad">
               <span class="tag" data-content="lane-wed-tag">Weddings &amp; Events</span>
               <h3 data-content="lane-wed-title">Your party, produced</h3>
@@ -408,7 +433,7 @@
             </div>
           </article>
           <article class="card featured">
-            <img decoding="async" src="assets/drone-hearts.jpg" alt="Three glowing hearts formed by drones, reflected in a lake at night" loading="lazy" data-content-img="img-drone-hearts" />
+            <img decoding="async" src="assets/drone-hearts.jpg" alt="Three glowing hearts formed by drones, reflected in a lake at night" loading="lazy" data-content-img="img-drone-hearts" width="1536" height="1024" />
             <div class="pad">
               <span class="tag" data-content="lane-drone-tag">New · 2027 Founding Season</span>
               <h3 data-content="lane-drone-title">Drone light shows</h3>
@@ -431,7 +456,7 @@
         <h2 data-content="wed-heading">Production that disappears — so the party doesn&rsquo;t have to</h2>
         <p class="lede" data-content="wed-intro">Central Virginia&rsquo;s best venues weren&rsquo;t built for modern production. We&rsquo;ve run sound at them anyway — load-in routes, power quirks, and noise ordinances handled before your guests arrive. No hand-offs, no gaps, no awkward silences.</p>
         <div class="split">
-          <img decoding="async" class="photo" src="assets/ceremony.jpg" alt="Ceremony sound set up outdoors at a Virginia venue, ready for guests" loading="lazy" data-content-img="img-ceremony" />
+          <img decoding="async" class="photo" src="assets/ceremony.jpg" alt="Ceremony sound set up outdoors at a Virginia venue, ready for guests" loading="lazy" data-content-img="img-ceremony" width="1000" height="750" />
           <div class="svc">
             <div class="svc-item">
               <h3 data-content="wed-svc-1-title">Wedding DJ &amp; MC flow</h3>
@@ -529,7 +554,8 @@
             <div class="cal-sub" id="calSubLabel">Charlottesville &amp; Central Virginia</div>
           </div>
           <div class="cal-dow" aria-hidden="true"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
-          <div class="cal-grid" id="calGrid" role="grid" aria-label="Availability calendar"></div>
+          <!-- R19: role="group", not "grid" — the calendar has no rows or arrow-key navigation, so grid semantics would lie to assistive tech. -->
+          <div class="cal-grid" id="calGrid" role="group" aria-label="Availability calendar"></div>
           <div class="cal-legend" aria-hidden="true">
             <span><i style="background:#7dffcb"></i>Available</span>
             <span><i style="background:#d9a441"></i>On hold</span>
@@ -608,7 +634,7 @@
         <h2 data-content="about-heading">About Us</h2>
         <p class="lede" data-content="about-intro">Finding inspiration in every turn. WhenWhere is an event production company based in Charlottesville, serving weddings and private events across Central Virginia — the DJ &amp; MC, the sound, the lighting, and, from 2027, the sky itself.</p>
         <div class="split">
-          <img decoding="async" class="photo" src="assets/ceremony.jpg" alt="Ceremony sound set up outdoors at a Virginia venue, ready for guests" loading="lazy" data-content-img="img-ceremony" />
+          <img decoding="async" class="photo" src="assets/ceremony.jpg" alt="Ceremony sound set up outdoors at a Virginia venue, ready for guests" loading="lazy" data-content-img="img-ceremony" width="1000" height="750" />
           <div>
             <h3 style="font-size:1.5rem;margin-bottom:10px" data-content="about-story-title">Our Story</h3>
             <p style="color:var(--muted);margin:0 0 14px" data-content="about-story-1">WhenWhere started with a simple observation: the nights people remember aren&rsquo;t the ones with the fanciest kit — they&rsquo;re the ones where everything just <em>worked</em>. The vows landed clearly at the back row. The speeches were crisp. Dinner flowed into dancing without a gap, and the floor never emptied.</p>
@@ -642,7 +668,6 @@
       </div>
     </section>
 
-    <span id="contact"></span>
     <section id="inquire" class="form-sec">
       <div class="wrap">
         <div class="form-grid">
@@ -658,23 +683,29 @@
             </ul>
           </div>
           <div>
-            <form class="inquiry" id="inquiryForm" novalidate>
+            <form class="inquiry" id="inquiryForm" action="https://script.google.com/macros/s/AKfycbym4Zgbh9zSy3O08qq5ItEmrrDMUQieOEJFRMxhKAmiWX_KMV1OzDmQi5UnL_t44iZxoA/exec" method="post" novalidate>
+              <!-- R2: with JS on, the handler below preventDefaults and POSTs
+                   via fetch. With JS off (or if the script fails), the browser
+                   POSTs here directly and the visitor sees the script's plain
+                   "ok" page — the inquiry still lands. Keep this action in
+                   sync with WHENWHERE_CONFIG.INQUIRY_ENDPOINT. -->
               <div class="frow">
                 <div class="field" id="f-name">
                   <label for="inName" data-content="form-label-name">Your name *</label>
-                  <input id="inName" name="name" type="text" autocomplete="name" placeholder="Jordan Smith" required />
+                  <!-- R15: maxlengths on every field, matching the server-side caps in Code.gs clean(). -->
+                  <input id="inName" name="name" type="text" autocomplete="name" placeholder="Jordan Smith" maxlength="100" required />
                   <p class="err">Please tell us your name.</p>
                 </div>
                 <div class="field" id="f-email">
                   <label for="inEmail" data-content="form-label-email">Email *</label>
-                  <input id="inEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+                  <input id="inEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="254" required />
                   <p class="err">Please enter a valid email so we can reply.</p>
                 </div>
               </div>
               <div class="frow">
                 <div class="field">
                   <label for="inPhone" data-content="form-label-phone">Phone <span class="opt">(optional)</span></label>
-                  <input id="inPhone" name="phone" type="tel" autocomplete="tel" placeholder="(434) 555-0100" />
+                  <input id="inPhone" name="phone" type="tel" autocomplete="tel" placeholder="(434) 555-0100" maxlength="30" />
                 </div>
                 <div class="field" id="f-type">
                   <label for="inType" data-content="form-label-type">I&rsquo;m here about *</label>
@@ -693,13 +724,14 @@
                 </div>
               </div>
               <div class="frow">
-                <div class="field">
+                <div class="field" id="f-date">
                   <label for="inDate" data-content="form-label-date">Event date <span class="opt">(or best guess)</span></label>
                   <input id="inDate" name="date" type="date" />
+                  <p class="err">Please choose today or a future date.</p>
                 </div>
                 <div class="field">
                   <label for="inVenue" data-content="form-label-venue">Venue / town <span class="opt">(optional)</span></label>
-                  <input id="inVenue" name="venue" type="text" placeholder="Vineyard in Crozet, private estate…" />
+                  <input id="inVenue" name="venue" type="text" placeholder="Vineyard in Crozet, private estate…" maxlength="200" />
                 </div>
               </div>
               <div class="frow">
@@ -728,7 +760,7 @@
               </div>
               <div class="field">
                 <label for="inDream" data-content="form-label-dream">Tell us about the night</label>
-                <textarea id="inDream" name="dream" rows="3" placeholder="A vineyard wedding, 150 guests, dancing until 11 — and our initials in the sky at the send-off…"></textarea>
+                <textarea id="inDream" name="dream" rows="3" maxlength="2000" placeholder="A vineyard wedding, 150 guests, dancing until 11 — and our initials in the sky at the send-off…"></textarea>
               </div>
               <div class="field">
                 <label data-content="form-label-stage">Where are you in planning?</label>
@@ -739,11 +771,13 @@
                 </div>
               </div>
               <button class="btn" type="submit" id="inquirySubmit" style="width:100%">Send my inquiry</button>
+              <noscript><p style="color:var(--night-muted);font-size:.88rem;margin:12px 0 0">JavaScript is off, so submitting sends your inquiry directly — you will see a plain confirmation page. It still reaches us.</p></noscript>
               <p style="color:var(--night-muted);font-size:.88rem;margin:12px 0 0" id="formModeNote">We reply from our personal email for now — no new inbox to check, and no obligation. This is an inquiry, not a booking.</p>
-              <div class="form-sending" id="formSending" role="status"></div>
+              <!-- R18: panels are focusable and receive focus on show, so keyboard/screen-reader users land on the result. -->
+              <div class="form-sending" id="formSending" role="status" tabindex="-1"></div>
             </form>
 
-            <div class="result" id="resultPanel" role="status">
+            <div class="result" id="resultPanel" role="status" tabindex="-1">
               <h3>Your inquiry is ready, <span id="resultName">friend</span> ✦</h3>
               <p id="resultFallbackNote">Copy it or download it to send later. We&rsquo;ll reply from our personal email.</p>
               <pre id="resultText"></pre>
@@ -773,6 +807,9 @@
         var canvas = document.getElementById('sky');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');
+        if (!ctx) return; /* no 2d context: leave the still image, never break the form below */
+        var DPR = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = 900 * DPR; canvas.height = 520 * DPR;
         var W = canvas.width, H = canvas.height;
         var nameEl = document.getElementById('shapeName');
         var countEl = document.getElementById('droneCount');
@@ -837,9 +874,11 @@
           var shares = lens.map(function (L) { return Math.max(1, Math.floor(n*L/total)); });
           var sum = shares.reduce(function (a, b) { return a+b; }, 0);
           var order = lens.map(function (L, i) { return i; }).sort(function (a, b) { return lens[b]-lens[a]; });
-          var k = 0, guard = 0;
-          while (sum < n && guard++ < 100) { shares[order[k % order.length]]++; sum++; k++; }
-          while (sum > n && guard++ < 100) { var idx = order[k % order.length]; if (shares[idx] > 1) { shares[idx]--; sum--; } k++; }
+          var k = 0;
+          /* Bounded by construction: each step moves sum by exactly 1 and
+             the starting error is < n, so these terminate in < n steps. */
+          while (sum < n) { shares[order[k % order.length]]++; sum++; k++; }
+          while (sum > n) { var idx = order[k % order.length]; if (shares[idx] > 1) { shares[idx]--; sum--; } k++; }
           var out = [];
           runs.forEach(function (r, i) { out = out.concat(resample(r, shares[i])); });
           return out;
@@ -890,6 +929,25 @@
           var gem = [{x:gx,y:gy-30},{x:gx+26,y:gy},{x:gx,y:gy+30},{x:gx-26,y:gy},{x:gx,y:gy-30}];
           return pts.concat(resample(gem, 12));
         }
+        /* R5: glow sprites, one per colour, rendered once: drawImage replaces
+           a per-drone-per-frame shadowBlur, which is the expensive part of
+           the old draw loop at 200 drones. */
+        var _sprites = {};
+        function spriteFor(color) {
+          if (_sprites[color]) return _sprites[color];
+          var c = document.createElement('canvas'); c.width = 32; c.height = 32;
+          var g = c.getContext('2d');
+          if (!g) return null;
+          var grad = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+          grad.addColorStop(0, color); grad.addColorStop(0.35, color);
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+          g.fillStyle = grad; g.fillRect(0, 0, 32, 32);
+          /* solid core dot on top of the glow, so the sprite reads as a drone */
+          g.globalCompositeOperation = 'source-over';
+          g.fillStyle = color; g.beginPath(); g.arc(16, 16, 5, 0, Math.PI * 2); g.fill();
+          _sprites[color] = c;
+          return c;
+        }
         var PALETTES = {
           heart: ['#ff7d9c', '#ff4d6d', '#ffb3c1', '#ffffff'],
           rings: ['#ffd166', '#e3b356', '#fff3c4', '#ffffff'],
@@ -901,11 +959,11 @@
           { name: 'Starburst finale', points: starPts, count: 200, palette: PALETTES.star }
         ];
 
-        var drones = [], startTime = 0, shapeIdx = 0, cycleTimer = null;
+        var drones = [], startTime = 0, shapeIdx = 0, cycleTimer = null, rafId = null, running = false, canvasVisible = true;
         function setFormation(idx) {
           shapeIdx = idx;
           var shape = SHAPES[idx];
-          var pts = shape.points(shape.count);
+          var pts = shape._pts || (shape._pts = shape.points(shape.count)); /* R28: geometry is static per load — the O(n^2) heart-pair search used to rerun on every formation change. */
           nameEl.textContent = shape.name;
           countEl.textContent = pts.length + ' drones in this sketch';
           drones = pts.map(function (p, i2) {
@@ -934,20 +992,45 @@
             d.x = d.sx + (d.tx - d.sx) * e;
             d.y = d.sy + (d.ty - d.sy) * e + Math.sin(t * 1.8 + d.ph) * (lt >= 1 ? 1.6 : 0);
             ctx.globalAlpha = .75 + .25 * Math.sin(t * 3 + d.ph);
-            ctx.fillStyle = d.c;
-            ctx.shadowColor = d.c; ctx.shadowBlur = 12;
-            ctx.beginPath(); ctx.arc(d.x, d.y, 4.2, 0, Math.PI * 2); ctx.fill();
+            var spr = spriteFor(d.c);
+            if (spr) ctx.drawImage(spr, d.x - 11, d.y - 11, 22, 22);
+            else { ctx.fillStyle = d.c; ctx.beginPath(); ctx.arc(d.x, d.y, 4.2, 0, Math.PI * 2); ctx.fill(); }
           });
-          ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-          if (!reduced) requestAnimationFrame(draw);
+          ctx.globalAlpha = 1;
+          if (!reduced && running) rafId = requestAnimationFrame(draw);
+        }
+        function startAnim() {
+          if (reduced || running || !canvasVisible || document.hidden) return;
+          running = true;
+          cycleTimer = setInterval(function () { setFormation((shapeIdx + 1) % SHAPES.length); }, 6000);
+          rafId = requestAnimationFrame(draw);
+        }
+        function stopAnim() {
+          running = false;
+          if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
         }
         setFormation(0);
-        requestAnimationFrame(draw);
-        if (!reduced) {
-          cycleTimer = setInterval(function () { setFormation((shapeIdx + 1) % SHAPES.length); }, 6000);
+        if (reduced) { /* setFormation already drew the final frame once */ }
+        else {
+          /* Pause off-screen / in a hidden tab: the interval used to keep
+             re-forming shapes while rAF was paused, resetting the animation
+             on every return and burning battery in the background. */
+          /* R4: pause the loop when the canvas is off-screen or the tab is hidden — it used to run forever. */
+          if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+              canvasVisible = entries[0].isIntersecting;
+              if (canvasVisible) startAnim(); else stopAnim();
+            }, { threshold: 0.05 }).observe(canvas);
+          }
+          document.addEventListener('visibilitychange', function () {
+            if (document.hidden) stopAnim(); else startAnim();
+          });
+          startAnim();
         }
       })();
-
+    </script>
+    <script>
       /* ============ Lane shortcuts preset the inquiry ============ */
       document.querySelectorAll('[data-interest]').forEach(function (link) {
         link.addEventListener('click', function () {
@@ -969,28 +1052,25 @@
          CONTENT_CSV_URL: File > Share > Publish to web > CSV link from
                         the CONTENT Sheet (key | text | image | alt).
                         Leave "" to read content.json beside this page. */
-      var WHENWHERE_CONFIG = {
+      /* R27: frozen and read only via window.WHENWHERE_CONFIG — the calendar used to read the bare
+         name, which throws a ReferenceError if this block ever moves. */
+      window.WHENWHERE_CONFIG = Object.freeze({
         SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeptdeyg4hv_lAP0ib3zYqbGRV2AD-2lVArXNvjujn644T7RUxaWQ1CYmbr5f5GMeXAUpKKLQffnZi/pub?gid=0&single=true&output=csv",
         INQUIRY_ENDPOINT: "https://script.google.com/macros/s/AKfycbym4Zgbh9zSy3O08qq5ItEmrrDMUQieOEJFRMxhKAmiWX_KMV1OzDmQi5UnL_t44iZxoA/exec",
         CONTENT_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRfwoYY769Dq1nZCsXjmrVYnlJyEsk6PMzQrqZZIDKivCES0Fj9ZiayJqI1JDsUWKoFbhKMI8TUDypk/pub?gid=0&single=true&output=csv"
-      };
+      });
 
-      /* ============ Site content (Sheets-backed) ============
-         Editable text and images live in a Google Sheet (CONTENT_CSV_URL,
-         published to web as CSV, columns: key | text | image | alt) or,
-         as a fallback, in content.json beside this page. Elements tagged
-         with data-content="key" get their text replaced; <img> tags with
-         data-content-img="key" get src/alt replaced. The hardcoded HTML
-         is the fallback — if neither source loads, the page is unchanged.
-         HTML_KEYS are the few values that keep markup (hero headline,
-         etc.) and are set with innerHTML; everything else uses textContent.
-         Blank cells are ignored, so a half-filled Sheet never wipes text. */
-      (function () {
-        var HTML_KEYS = {
-          'hero-headline': true, 'manifesto-1': true, 'manifesto-2': true,
-          'drone-note': true, 'about-story-1': true,
-          'form-label-phone': true, 'form-label-date': true, 'form-label-venue': true
-        };
+
+      /* ============ Shared utils (was duplicated in two places) ============
+         parseCSV lived in both the content loader and the calendar, verbatim
+         (~35 lines each) — a fix applied to one would silently not reach the
+         other. It lives here once now, with the fetch timeout and the HTML
+         sanitiser the loaders both need. */
+      /* R3: one <script> block per concern (utils, canvas, content, calendar, form), each
+         guarded, so a throw in the animation cannot un-wire the calendar or the form. */
+      window.WhenWhereUtils = (function () {
+        /* R14: the single shared CSV parser — the content and calendar blocks each had their own
+           verbatim copy, and only one of them stripped a BOM. */
         function parseCSV(text) {
           var rows = [], row = [], field = '', inQ = false;
           if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
@@ -1013,6 +1093,85 @@
           if (row.length > 1 || row[0] !== '') rows.push(row);
           return rows;
         }
+        function escHtml(t) {
+          return String(t == null ? '' : t).replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+        /* R11: HTML_KEYS values come from a Sheet anyone with edit access
+           can change, and were set with raw innerHTML — an <img onerror>
+           or <a href="javascript:"> in the Sheet would run in every
+           visitor's browser. Allow-list only: span/br/a/em/strong/b/i,
+           class on span, and http(s)/mailto/relative hrefs on a. */
+        var ALLOWED_TAGS = { SPAN: 1, BR: 1, A: 1, EM: 1, STRONG: 1, B: 1, I: 1 };
+        function sanitizeHTML(html) {
+          var tpl = document.createElement('template');
+          tpl.innerHTML = html;
+          (function walk(node) {
+            var kids = Array.prototype.slice.call(node.childNodes);
+            kids.forEach(function (child) {
+              if (child.nodeType === 1) {
+                if (!ALLOWED_TAGS[child.tagName]) {
+                  /* Disallowed element: drop the tag, keep its text. */
+                  while (child.firstChild) node.insertBefore(child.firstChild, child);
+                  node.removeChild(child);
+                } else {
+                  var attrs = Array.prototype.slice.call(child.attributes);
+                  attrs.forEach(function (a) {
+                    var name = a.name.toLowerCase();
+                    if (child.tagName === 'A' && name === 'href') {
+                      if (!/^(https?:|mailto:|#|\/)/i.test(a.value)) child.removeAttribute('href');
+                    } else if (!(child.tagName === 'SPAN' && name === 'class')) {
+                      child.removeAttribute(a.name);
+                    }
+                  });
+                  walk(child);
+                }
+              }
+            });
+          })(tpl.content);
+          return tpl.innerHTML;
+        }
+        /* Content images may only be a file in assets/ or an https: URL —
+           never javascript: or data: (a Sheet row must not be able to turn
+           an <img> into a tracker or a script). */
+        function isSafeImageSrc(src) {
+          return /^(assets\/|https:\/\/)/i.test(String(src || '').trim());
+        }
+        /* R12: fetch() with no timeout hangs forever on a stalled endpoint.
+           10 s, then the caller's .catch runs its fallback (sample dates /
+           content.json) instead of leaving the visitor waiting. */
+        function fetchText(url, timeoutMs) {
+          var ctrl = new AbortController();
+          var timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || 10000);
+          return fetch(url, { cache: 'no-store', signal: ctrl.signal })
+            .then(function (res) {
+              if (!res.ok) throw new Error('fetch failed: ' + res.status);
+              return res.text();
+            })
+            .finally(function () { clearTimeout(timer); });
+        }
+        return { parseCSV: parseCSV, escHtml: escHtml, sanitizeHTML: sanitizeHTML,
+                 isSafeImageSrc: isSafeImageSrc, fetchText: fetchText };
+      })();
+
+      /* ============ Site content (Sheets-backed) ============
+         Editable text and images live in a Google Sheet (CONTENT_CSV_URL,
+         published to web as CSV, columns: key | text | image | alt) or,
+         as a fallback, in content.json beside this page. Elements tagged
+         with data-content="key" get their text replaced; <img> tags with
+         data-content-img="key" get src/alt replaced. The hardcoded HTML
+         is the fallback — if neither source loads, the page is unchanged.
+         HTML_KEYS are the few values that keep markup (hero headline,
+         etc.) and are set with innerHTML; everything else uses textContent.
+         Blank cells are ignored, so a half-filled Sheet never wipes text. */
+      (function () {
+        var HTML_KEYS = {
+          'hero-headline': true, 'manifesto-1': true, 'manifesto-2': true,
+          'drone-note': true, 'about-story-1': true,
+          'form-label-phone': true, 'form-label-date': true, 'form-label-venue': true
+        };
+        /* parseCSV now lives in WhenWhereUtils (shared, see above) */
         function mapFromRows(rows) {
           var map = {};
           rows.forEach(function (r, idx) {
@@ -1033,31 +1192,28 @@
           for (var i = 0; i < els.length; i++) {
             var el = els[i], k = el.getAttribute('data-content'), item = map[k];
             if (!item || !item.text) continue;
-            if (HTML_KEYS[k]) el.innerHTML = item.text;
+            if (HTML_KEYS[k]) el.innerHTML = WhenWhereUtils.sanitizeHTML(item.text);
             else el.textContent = item.text;
           }
           var imgs = document.querySelectorAll('[data-content-img]');
           for (var j = 0; j < imgs.length; j++) {
             var im = imgs[j], it = map[im.getAttribute('data-content-img')];
             if (!it) continue;
-            if (it.image) im.setAttribute('src', it.image);
+            if (it.image && WhenWhereUtils.isSafeImageSrc(it.image)) im.setAttribute('src', it.image);
             if (it.alt) im.setAttribute('alt', it.alt);
           }
         }
         function loadJSON() {
-          return fetch('content.json', { cache: 'no-store' }).then(function (res) {
-            if (!res.ok) throw new Error('content.json missing');
-            return res.json();
+          return WhenWhereUtils.fetchText('content.json', 10000).then(function (text) {
+            return JSON.parse(text);
           });
         }
         function run() {
-          var url = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.CONTENT_CSV_URL || '').trim();
+          var url = ((window.WHENWHERE_CONFIG && window.WHENWHERE_CONFIG.CONTENT_CSV_URL) || '').trim();
           if (url) {
-            fetch(url, { cache: 'no-store' }).then(function (res) {
-              if (!res.ok) throw new Error('content CSV failed');
-              return res.text();
-            }).then(function (text) { applyContent(mapFromRows(parseCSV(text))); })
-            .catch(function () { loadJSON().then(applyContent).catch(function () {}); });
+            WhenWhereUtils.fetchText(url, 10000)
+              .then(function (text) { applyContent(mapFromRows(WhenWhereUtils.parseCSV(text))); })
+              .catch(function () { loadJSON().then(applyContent).catch(function () {}); });
           } else {
             loadJSON().then(applyContent).catch(function () {});
           }
@@ -1065,7 +1221,8 @@
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
         else run();
       })();
-
+    </script>
+    <script>
       /* ============ Availability calendar (Option A: Sheets-driven grid) ============ */
       (function () {
         var grid = document.getElementById('calGrid');
@@ -1135,7 +1292,7 @@
             : e.s === "hold"
             ? '<br><span class="note">Worth asking — holds release if the deposit doesn&rsquo;t land.</span><br><button type="button" class="btn small" data-check-date="' + k + '">Ask about this date</button>'
             : '<br><span class="note">Fully booked — ask about nearby dates instead.</span><br><button type="button" class="btn small" data-check-date="' + k + '">Ask about nearby dates</button>';
-          detailEl.innerHTML = "<b>" + fmtLong(y, m, d) + "</b> · " + label(e.s) + '<br><span class="note">' + e.n.replace(/</g, "&lt;") + "</span>" + action;
+          detailEl.innerHTML = "<b>" + fmtLong(y, m, d) + "</b> · " + label(e.s) + '<br><span class="note">' + WhenWhereUtils.escHtml(e.n) + "</span>" + action;
           var btn = detailEl.querySelector('[data-check-date]');
           if (btn) btn.addEventListener('click', function () {
             var dateInput = document.getElementById('inDate');
@@ -1163,12 +1320,13 @@
           }
           for (var d = 1; d <= days; d++) {
             (function (d) {
-              var k = key(y, m, d); var e = entry(k);
+              var k = key(y, m, d); var e = entry(k); var isPast = k < todayK; /* ISO dates sort lexicographically */
               var b = document.createElement('button');
               b.type = "button";
-              b.className = "cal-cell is-" + e.s + (k === todayK ? " is-today" : "");
-              b.setAttribute('role', 'gridcell');
+              b.className = "cal-cell is-" + e.s + (k === todayK ? " is-today" : "") + (isPast ? " is-past" : "");
+              b.dataset.date = k; /* read by the single delegated click handler below */
               b.setAttribute('aria-selected', selected === k ? 'true' : 'false');
+              if (isPast) { b.disabled = true; b.setAttribute('aria-disabled', 'true'); }
               /* Show the Sheet note on the cell itself when this date has a
                  real Sheet row — e.g. "Thanksgiving Day". Dates with no row
                  keep the plain cell. A leading "Available — " / "Booked — "
@@ -1181,13 +1339,28 @@
                 cellNote = cellNote.trim();
               }
               var esc = function (t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
-              b.setAttribute('aria-label', fmtLong(y, m, d) + ", " + label(e.s) + (cellNote ? ", " + cellNote : ""));
+              b.setAttribute('aria-label', fmtLong(y, m, d) + ", " + label(e.s) + (isPast ? ", past date" : "") + (cellNote ? ", " + cellNote : ""));
               b.innerHTML = '<span class="dnum">' + d + '</span>' + (cellNote ? '<span class="dnote">' + esc(cellNote) + '</span>' : '') + '<span class="dstat">' + label(e.s) + '</span>';
-              b.addEventListener('click', function () { selected = k; render(); showDetail(k); });
+              
               grid.appendChild(b);
             })(d);
           }
         }
+
+        /* R6: one delegated listener, not one per cell per render. The old
+           code rebuilt all ~42 buttons (and their listeners) on every date
+           click, which also dropped keyboard focus to <body>. Selection now
+           updates classes in place; render() runs only on month change. */
+        grid.addEventListener('click', function (ev) {
+          var btn = ev.target.closest('.cal-cell');
+          if (!btn || btn.disabled || !btn.dataset.date) return;
+          selected = btn.dataset.date;
+          var cells = grid.querySelectorAll('.cal-cell[data-date]');
+          for (var ci = 0; ci < cells.length; ci++) {
+            cells[ci].setAttribute('aria-selected', cells[ci] === btn ? 'true' : 'false');
+          }
+          showDetail(selected);
+        });
 
         function step(dir) {
           cur.m += dir;
@@ -1200,28 +1373,7 @@
         prevBtn.addEventListener('click', function () { step(-1); });
         nextBtn.addEventListener('click', function () { step(1); });
 
-        /* CSV parsing — handles quoted fields, commas and newlines inside quotes */
-        function parseCSV(text) {
-          var rows = [], row = [], field = "", inQ = false;
-          for (var i = 0; i < text.length; i++) {
-            var c = text[i], n = text[i + 1];
-            if (inQ) {
-              if (c === '"' && n === '"') { field += '"'; i++; }
-              else if (c === '"') inQ = false;
-              else field += c;
-            } else if (c === '"') inQ = true;
-            else if (c === ',') { row.push(field); field = ""; }
-            else if (c === '\n' || c === '\r') {
-              if (c === '\r' && n === '\n') i++;
-              row.push(field); field = "";
-              if (row.length > 1 || row[0] !== "") rows.push(row);
-              row = [];
-            } else field += c;
-          }
-          row.push(field);
-          if (row.length > 1 || row[0] !== "") rows.push(row);
-          return rows;
-        }
+        /* parseCSV now lives in WhenWhereUtils (shared, see above) */
         function normDate(s) {
           s = (s || "").trim();
           var iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
@@ -1232,14 +1384,17 @@
           if (!isNaN(dt)) return key(dt.getFullYear(), dt.getMonth(), dt.getDate());
           return null;
         }
+        /* An unrecognised or blank status renders as a hold, never as open: showing
+           a date as Available when the Sheet says something else would be a false promise. */
         function normStatus(s) {
           s = (s || "").toLowerCase();
           if (s.indexOf('book') !== -1) return "booked";
           if (s.indexOf('hold') !== -1) return "hold";
-          return "available";
+          if (s.indexOf('avail') !== -1) return "available";
+          return "hold";
         }
         function dataFromCSV(text) {
-          var rows = parseCSV(text); var out = {};
+          var rows = WhenWhereUtils.parseCSV(text); var out = {};
           rows.forEach(function (r, idx) {
             if (idx === 0 && (r[0] || "").trim().toLowerCase() === 'date') return;
             var k = normDate(r[0]); if (!k) return;
@@ -1249,17 +1404,18 @@
           return out;
         }
 
-        var url = (WHENWHERE_CONFIG.SHEET_CSV_URL || "").trim();
+        var url = ((window.WHENWHERE_CONFIG && window.WHENWHERE_CONFIG.SHEET_CSV_URL) || "").trim();
         if (!url) {
           sampleStatus("");
           render();
         } else {
+          /* R13: the old code rendered the SAMPLE grid first, then re-rendered
+             with live data when the fetch landed — visitors briefly saw sample
+             December dates, then the grid jumped to November. Render only once
+             the fetch settles (success or fallback); fetchText's 10 s timeout
+             bounds the wait, and the status line already says "Loading…". */
           setStatus("<strong>Loading availability</strong> from your Google Sheet…", false);
-          render();
-          fetch(url, { cache: 'no-store' }).then(function (res) {
-            if (!res.ok) throw new Error('fetch failed');
-            return res.text();
-          }).then(function (text) {
+          WhenWhereUtils.fetchText(url, 10000).then(function (text) {
             data = dataFromCSV(text); isLive = true;
             var now = new Date();
             MIN = { y: now.getFullYear(), m: now.getMonth() };
@@ -1275,7 +1431,8 @@
           });
         }
       })();
-
+    </script>
+    <script>
       /* ============ Inquiry form ============ */
       (function () {
         var form = document.getElementById('inquiryForm');
@@ -1283,7 +1440,7 @@
         var COOLDOWN_MS = 5 * 60 * 1000; /* one send per browser per 5 minutes */
         /* Reflect which mode the form is in, so the button never over-promises */
         (function setFormMode() {
-          var ep = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.INQUIRY_ENDPOINT || '').trim();
+          var ep = ((window.WHENWHERE_CONFIG && window.WHENWHERE_CONFIG.INQUIRY_ENDPOINT) || '').trim();
           var btn = document.getElementById('inquirySubmit');
           var note = document.getElementById('formModeNote');
           if (!ep) {
@@ -1307,6 +1464,11 @@
           var email = val('inEmail');
           ok = mark('f-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
           ok = mark('f-type', !val('inType')) && ok;
+          /* R7: a past event date is never valid — the calendar no longer
+             offers past dates, but a hand-typed one must fail here too. */
+          var _today = new Date();
+          var todayStr = _today.getFullYear() + '-' + String(_today.getMonth() + 1).padStart(2, '0') + '-' + String(_today.getDate()).padStart(2, '0');
+          ok = mark('f-date', !!val('inDate') && val('inDate') < todayStr) && ok;
           if (!ok) { var bad = document.querySelector('.field.invalid input, .field.invalid select'); if (bad) bad.focus(); return; }
 
           var stage = (form.querySelector('input[name="stage"]:checked') || {}).value || '';
@@ -1333,7 +1495,7 @@
           document.getElementById('resultText').textContent = lines;
           document.getElementById('resultName').textContent = val('inName').split(' ')[0];
 
-          var endpoint = (window.WHENWHERE_CONFIG && WHENWHERE_CONFIG.INQUIRY_ENDPOINT || '').trim();
+          var endpoint = ((window.WHENWHERE_CONFIG && window.WHENWHERE_CONFIG.INQUIRY_ENDPOINT) || '').trim();
           var panel = document.getElementById('resultPanel');
           var sending = document.getElementById('formSending');
           var submitBtn = document.getElementById('inquirySubmit');
@@ -1341,6 +1503,7 @@
           function showFallback() {
             panel.classList.add('show');
             panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            panel.focus({ preventScroll: true });
           }
 
           if (!endpoint) { showFallback(); return; }
@@ -1370,21 +1533,73 @@
           params.set('date', val('inDate')); params.set('venue', val('inVenue'));
           params.set('guests', val('inGuests')); params.set('budget', val('inBudget'));
           params.set('stage', stage); params.set('dream', val('inDream'));
-          fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString() })
-            .then(function () {
-              try { localStorage.setItem('wwLastInquiry', String(Date.now())); } catch (e) {}
+          /* R1: the old POST used mode:'no-cors' and treated ANY settle as
+             success — a 500, a quota error or a broken deployment all showed
+             "Thank you — your inquiry is in" while nothing was saved. Try a
+             normal (CORS) POST first so the script's 'ok' body is the verdict
+             (Apps Script web apps answer CORS for these deployments); if the
+             browser will not let us read the response, retry once blind and
+             say so honestly — "sent, not confirmed" — with the copy/download
+             panel open so the inquiry is never lost. 15 s AbortController
+             timeout: Apps Script can take 6 minutes to fail, and the button
+             used to stay disabled that whole time. */
+          var ctrl = new AbortController();
+          var timer = setTimeout(function () { ctrl.abort(); }, 15000);
+          function doneSending() {
+            clearTimeout(timer);
+            inFlight = false;
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send my inquiry'; }
+          }
+          function markSent() {
+            try { localStorage.setItem('wwLastInquiry', String(Date.now())); } catch (e) {}
+          }
+          fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString(), signal: ctrl.signal })
+            .then(function (res) { return res.text(); })
+            .then(function (body) {
+              if ((body || '').trim() !== 'ok') throw new Error('server did not confirm');
+              markSent();
               sending.className = 'form-sending show ok';
               sending.innerHTML = '<strong>Thank you — your inquiry is in.</strong> It&rsquo;s been saved to our private Sheet and we&rsquo;ve been notified. We&rsquo;ll reply from our personal email, usually within one business day.';
+              panel.classList.add('show'); /* R17: keep a copy available even after a successful send */
               sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              sending.focus({ preventScroll: true });
+              doneSending();
             })
-            .catch(function () {
-              sending.className = 'form-sending show err';
-              sending.textContent = 'That send didn&rsquo;t go through — use the options below to copy or download your inquiry instead.';
-              showFallback();
-            })
-            .finally(function () {
-              inFlight = false;
-              if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send my inquiry'; }
+            .catch(function (err) {
+              if (err && err.name === 'AbortError') {
+                sending.className = 'form-sending show err';
+                sending.textContent = 'That send is taking too long — please try again. Your inquiry has not been lost: it is still in the form above.';
+                sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                doneSending();
+                return;
+              }
+              if (err && err.message === 'server did not confirm') {
+                /* The server answered and it was not 'ok' — do NOT retry
+                   blind: the row may already exist, and a retry would double
+                   it (the server dedups, but the visitor would see two
+                   conflicting messages). */
+                sending.className = 'form-sending show err';
+                sending.textContent = 'That send didn’t go through — use the options below to copy or download your inquiry instead.';
+                showFallback();
+                doneSending();
+                return;
+              }
+              /* Network / CORS-blocked read: the POST may still have landed,
+                 so retry once blind and say so — never claim a save we
+                 cannot see. */
+              fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString() })
+                .then(function () {
+                  markSent();
+                  sending.className = 'form-sending show ok';
+                  sending.innerHTML = '<strong>Your inquiry was sent.</strong> We could not confirm delivery from this browser, so please keep a copy below — and if you do not hear back within one business day, send it again or use the copy.';
+                  showFallback();
+                  doneSending();
+                }, function () {
+                  sending.className = 'form-sending show err';
+                  sending.textContent = 'That send didn’t go through — use the options below to copy or download your inquiry instead.';
+                  showFallback();
+                  doneSending();
+                });
             });
         });
 
@@ -1397,7 +1612,12 @@
           } else fallback();
           function fallback() {
             var ta = document.createElement('textarea');
+            /* R16: off-screen + readonly so it never flashes or scrolls the
+               page; setSelectionRange is the iOS path (select() alone fails). */
+            ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+            ta.setAttribute('readonly', '');
             ta.value = text; document.body.appendChild(ta); ta.select();
+            try { ta.setSelectionRange(0, ta.value.length); } catch (e) {}
             try { document.execCommand('copy'); done(); } catch (e) { msg.textContent = 'Select the text above and copy it manually.'; }
             document.body.removeChild(ta);
           }

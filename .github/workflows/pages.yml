@@ -7,6 +7,11 @@
 #
 # One-time setup (repo owner): Settings -> Pages -> Build and deployment
 # -> Source: GitHub Actions. Then push to main and watch this run.
+#
+# The deploy job only uploads the public site files (index.html,
+# content.json, assets/) — docs/ (setup guides, Code.gs) is not served.
+# The validate job gates every deploy on the page's scripts parsing and
+# the data file being valid JSON.
 name: Deploy to GitHub Pages
 
 on:
@@ -26,7 +31,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Validate page scripts and data
+        run: |
+          python3 - <<'EOF'
+          import json, re, subprocess, tempfile, pathlib
+          json.load(open('content.json'))
+          html = pathlib.Path('index.html').read_text()
+          scripts = [m.group(1) for m in re.finditer(r'<script>(.*?)</script>', html, re.S)]
+          assert scripts, 'no inline scripts found'
+          for i, src in enumerate(scripts):
+              p = pathlib.Path(tempfile.gettempdir()) / f'ww-script-{i}.js'
+              p.write_text(src)
+              subprocess.run(['node', '--check', str(p)], check=True)
+          # The inquiry endpoint must appear exactly twice: config + form action.
+          url = 'https://script.google.com/macros/s/AKfycbym4Zgbh9zSy3O08qq5ItEmrrDMUQieOEJFRMxhKAmiWX_KMV1OzDmQi5UnL_t44iZxoA/exec'
+          assert html.count(url) == 2, f'endpoint occurrences: {html.count(url)}'
+          print(f'validate ok: {len(scripts)} scripts, content.json parses, endpoint x2')
+          EOF
+
   deploy:
+    needs: validate
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -38,10 +68,16 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v6
 
+      - name: Stage public site files
+        run: |
+          mkdir -p site/assets
+          cp index.html content.json site/
+          cp -r assets/. site/assets/
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: '.'
+          path: 'site'
 
       - name: Deploy to GitHub Pages
         id: deployment

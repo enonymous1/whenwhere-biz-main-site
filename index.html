@@ -1559,7 +1559,7 @@
               if ((body || '').trim() !== 'ok') throw new Error('server did not confirm');
               markSent();
               sending.className = 'form-sending show ok';
-              sending.innerHTML = '<strong>Thank you — your inquiry is in.</strong> It&rsquo;s been saved to our private Sheet and we&rsquo;ve been notified. We&rsquo;ll reply from our personal email, usually within one business day.';
+              sending.innerHTML = '<strong>Thank you — your inquiry is in.</strong> It&rsquo;s been saved to our private Sheet and we&rsquo;ve been notified. We&rsquo;ve also sent a confirmation to the email address you gave. We&rsquo;ll reply from our personal email, usually within one business day.';
               panel.classList.add('show'); /* R17: keep a copy available even after a successful send */
               sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
               sending.focus({ preventScroll: true });

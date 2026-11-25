@@ -5,8 +5,9 @@
  *   Extensions → Apps Script, replace the default Code.gs contents.
  *
  * 1. Change NOTIFY_EMAIL at the top below to the personal email you
- *    want new-inquiry notifications sent to. It is the only setting
- *    in this file — everything else stays as it is.
+ *    want new-inquiry notifications sent to. SEND_CONFIRMATION (just
+ *    below it) is the only other setting: on by default, it sends
+ *    the visitor a confirmation email styled like the notification.
  * 2. Deploy → New deployment → Web app
  *      Execute as: Me
  *      Who has access: Anyone
@@ -29,6 +30,15 @@
  * clients that can't render HTML, and an htmlBody laid out like the
  * form itself (Night & Gold, one labelled row per field). Reply-To is
  * the visitor's email, so Reply in Gmail goes straight to them.
+ *
+ * The visitor gets the same treatment when SEND_CONFIRMATION is on:
+ * a confirmation email in the same Night & Gold wrapper, same
+ * labelled field rows, but no Sheet link — that stays owner-only.
+ * It is sent FIRST, before the notification, so if the daily
+ * MailApp quota runs out mid-send the visitor still gets proof
+ * their inquiry landed. Two mails per inquiry on consumer Gmail
+ * MailApp (100/day) = 50 inquiries/day. Deduped repeats get no
+ * second confirmation: they return 'ok' before any mail is sent.
  *
  * If you change this code after deploying, Deploy → Manage deployments
  * → edit the deployment and pick the new version — otherwise the live
@@ -80,6 +90,13 @@
    listed gets the same email, and Reply-To is still the visitor. */
 var NOTIFY_EMAIL = 'your-personal-email@example.com';
 
+/** On = each NEW inquiry also gets a short confirmation email (see
+ * buildConfirmEmail), styled like the notification — same Night &
+ * Gold wrapper, same field rows, no Sheet link (that stays
+ * owner-only). Off = notify only. Either way the row is saved first
+ * and mail is best-effort; a mail failure never fails a saved inquiry. */
+var SEND_CONFIRMATION = true;
+
 /** Header row for the Inquiries tab, in column order. */
 var HEADERS = ['Submitted', 'Name', 'Email', 'Phone', 'Type', 'Date',
   'Venue', 'Guests', 'Budget', 'Stage', 'Dream/notes'];
@@ -115,6 +132,7 @@ function esc(s) {
  * @return {string} The trimmed, capped value ('' when absent).
  */
 /* R35: length caps — Sheets cells cap at 50,000 chars and an oversized field threw the append. */
+/* R35: length caps — Sheets cells cap at 50,000 chars and an oversized field threw the append. */
 function clean(v, max) {
   var s = String(v || '').trim();
   return max && s.length > max ? s.slice(0, max) : s;
@@ -131,6 +149,7 @@ function clean(v, max) {
  * @return {string} The value, quote-prefixed when it needs it.
  */
 /* R36: formula-injection guard — values starting = + - @ are stored as text, not formulas. */
+/* R36: formula-injection guard — values starting = + - @ are stored as text, not formulas. */
 function asText(s) {
   return /^[=+@-]/.test(s) ? "'" + s : s;
 }
@@ -142,6 +161,7 @@ function asText(s) {
  * @param {Object} p The posted parameters (e.parameter).
  * @return {string} '' when valid, otherwise a short client-safe message.
  */
+/* R34: server-side validation — the client checks are trivially bypassed by a direct POST. */
 /* R34: server-side validation — the client checks are trivially bypassed by a direct POST. */
 function validate(p) {
   if (!clean(p.name, MAX_LEN.name)) return 'name is required';
@@ -159,6 +179,7 @@ function validate(p) {
  * @param {Spreadsheet} ss The bound spreadsheet.
  * @return {Sheet} The Inquiries sheet, guaranteed to carry HEADERS in row 1.
  */
+/* R37: a headerless tab used to silently treat row 1 as the header — repair it before appending. */
 /* R37: a headerless tab used to silently treat row 1 as the header — repair it before appending. */
 function ensureSheet(ss) {
   var sheet = ss.getSheetByName('Inquiries') || ss.insertSheet('Inquiries');
@@ -187,14 +208,88 @@ function doGet() {
 
 /**
  * Handle one inquiry POST from the site form (or a direct POST).
- * Order is deliberate: validate → lock → dedup-check → append → notify
- * (best-effort) → mark throttled. The throttle key is written LAST, so a
+ * Order is deliberate: validate → lock → dedup-check → append →
+ * confirmation (best-effort, visitor first) → notify (best-effort) →
+ * mark throttled. The throttle key is written LAST, so a
  * failure before it leaves the visitor free to retry immediately instead
  * of being locked out for 5 minutes with a lost inquiry.
  * @param {Object} e The Apps Script event; e.parameter holds the fields.
  * @return {TextOutput} 'ok', or a generic 'error: …' (detail is logged,
  *   never returned — the endpoint is public and must not leak internals).
  */
+/**
+ * Builds the confirmation email to the visitor (plain text + HTML).
+ * Pure, like the notify bodies — no SpreadsheetApp/MailApp calls — so
+ * the wording and the escaping can be tested without a live Sheet.
+ *
+ * Same Night & Gold inline styling as the notification email, same
+ * labelled field rows, but no Sheet link: that stays owner-only. The
+ * copy promises only what the page already promises (a personal reply,
+ * usually within one business day) and says plainly that nothing else
+ * is coming unless they ask — the confirmation is a receipt, not the
+ * start of a mailing list. Replies go to NOTIFY_EMAIL when it is set
+ * (see doPost); otherwise they go to the script owner's Gmail, which
+ * is the same inbox.
+ *
+ * @param {string} email The visitor's (validated) address.
+ * @param {Array<Array<string>>} fields Label/value pairs, as built in
+ *   doPost — only non-empty values are shown.
+ * @param {string} dream The visitor's free-text note, may be empty.
+ * @return {{subject: string, body: string, htmlBody: string}} The three
+ *   parts MailApp.sendEmail takes.
+ */
+function buildConfirmEmail(email, fields, dream) {
+  var subject = 'Thanks — your WhenWhere inquiry is in';
+  var lines = ['Thanks — your inquiry is in.', ''];
+  var rows = '';
+  for (var i = 0; i < fields.length; i++) {
+    var v = (fields[i][1] || '').trim();
+    if (!v) continue;
+    lines.push(fields[i][0] + ': ' + v);
+    rows += '<tr><td style="padding:9px 14px 9px 0;vertical-align:top;width:150px;'
+      + 'font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#d9a441;'
+      + 'font-weight:700;">' + esc(fields[i][0]) + '</td>'
+      + '<td style="padding:9px 0;vertical-align:top;font-size:15px;color:#ffffff;">'
+      + esc(v) + '</td></tr>';
+  }
+  dream = (dream || '').trim();
+  if (dream) {
+    lines.push('', 'About the night:', dream);
+  }
+  lines.push('', 'Justin will reply personally to confirm your date, usually within one business day.',
+    '', 'This email was sent to ' + email + ' because someone submitted an inquiry with that address.',
+    'If that wasn’t you, just ignore it — nothing else is coming unless you ask.',
+    '', '— WhenWhere', 'whenwhere.biz');
+  var body = lines.join('\n');
+  var dreamHtml = dream
+    ? '<p style="margin:18px 0 0;padding:14px 16px;background:#141a3d;border-radius:8px;'
+      + 'font-size:15px;line-height:1.6;color:#e8ecff;">' + esc(dream).replace(/\r?\n/g, '<br>') + '</p>'
+    : '';
+  var htmlBody =
+    '<div style="background:#060a1a;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;">'
+    + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" '
+    + 'style="width:100%;max-width:600px;background:#0d1230;border:1px solid #d9a441;'
+    + 'border-radius:12px;padding:28px 30px;">'
+    + '<tr><td style="font-size:11px;letter-spacing:.3em;color:#d9a441;font-weight:700;">'
+    + 'WHENWHERE.BIZ</td></tr>'
+    + '<tr><td style="padding:8px 0 4px;font-family:Georgia,serif;font-size:26px;color:#ffffff;">'
+    + 'Thanks — your inquiry is in</td></tr>'
+    + '<tr><td style="padding:0 0 14px;font-size:13px;color:#aab3d6;">'
+    + 'We’ve got it, and Justin will reply personally to confirm your date, '
+    + 'usually within one business day.</td></tr>'
+    + '<tr><td><table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+    + 'style="width:100%;border-top:1px solid #2a3263;">' + rows + '</table></td></tr>'
+    + (dream ? '<tr><td style="padding:16px 0 0;font-size:11px;letter-spacing:.14em;'
+      + 'text-transform:uppercase;color:#d9a441;font-weight:700;">About the night</td></tr>'
+      + '<tr><td>' + dreamHtml + '</td></tr>' : '')
+    + '<tr><td style="padding:18px 0 0;font-size:13px;line-height:1.6;color:#aab3d6;">'
+    + 'This email was sent to ' + esc(email) + ' because someone submitted an inquiry '
+    + 'with that address. If that wasn’t you, just ignore it — nothing else is '
+    + 'coming unless you ask.</td></tr>'
+    + '</table></div>';
+  return { subject: subject, body: body, htmlBody: htmlBody };
+}
+
 function doPost(e) {
   try {
     var p = (e && e.parameter) || {};
@@ -207,6 +302,8 @@ function doPost(e) {
     var cache = CacheService.getScriptCache();
     var lock = LockService.getScriptLock();
     var haveLock = false;
+    // R31: the lock wraps the whole check-append-notify pipeline — the old code locked only
+    // the dedup check, so two first-ever submits could both write headers.
     // R31: the lock wraps the whole check-append-notify pipeline — the old code locked only
     // the dedup check, so two first-ever submits could both write headers.
     try { haveLock = lock.tryLock(10000); } catch (err) { haveLock = false; }
@@ -287,6 +384,25 @@ function doPost(e) {
         + '<a href="' + esc(sheetUrl) + '" style="color:#d9a441;">View all inquiries in the private Sheet &rarr;</a></td></tr>'
         + '</table></div>';
 
+      /* R39: the visitor's confirmation goes FIRST, then the owner
+         notification — if the daily MailApp quota runs out mid-send, the
+         person waiting on proof their inquiry landed gets the email, not
+         just the owner. Both are best-effort; neither can fail the save.
+         Deduped repeats never reach here (they return 'ok' above), so
+         nobody gets a second confirmation. */
+      var notifyOk = NOTIFY_EMAIL && NOTIFY_EMAIL !== 'your-personal-email@example.com' &&
+        NOTIFY_EMAIL.split(',').every(function (a) { return EMAIL_RE.test(a.trim()); });
+      if (SEND_CONFIRMATION) {
+        try {
+          var confirm = buildConfirmEmail(email, fields, dream);
+          var confirmOpts = { htmlBody: confirm.htmlBody, name: 'WhenWhere.biz' };
+          if (notifyOk) confirmOpts.replyTo = NOTIFY_EMAIL;
+          MailApp.sendEmail(email, confirm.subject, confirm.body, confirmOpts);
+        } catch (confirmErr) {
+          Logger.log('WhenWhere inquiry saved but confirmation email failed: ' + confirmErr);
+        }
+      }
+
       /* Notification is best-effort: the row above is already saved, so a
          mail failure (bad NOTIFY_EMAIL, daily MailApp quota) must not
          report a saved inquiry as failed. The old code let sendEmail
@@ -294,8 +410,6 @@ function doPost(e) {
          that had landed. A bad NOTIFY_EMAIL is logged and mail is skipped. */
       // R32/R33: mail is best-effort — a failure must not fail a saved inquiry — and the
       // notify address is validated first so a leftover placeholder never throws.
-      var notifyOk = NOTIFY_EMAIL && NOTIFY_EMAIL !== 'your-personal-email@example.com' &&
-        NOTIFY_EMAIL.split(',').every(function (a) { return EMAIL_RE.test(a.trim()); });
       if (notifyOk) {
         try {
           MailApp.sendEmail(NOTIFY_EMAIL,

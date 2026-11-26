@@ -1560,7 +1560,8 @@
               markSent();
               sending.className = 'form-sending show ok';
               sending.innerHTML = '<strong>Thank you — your inquiry is in.</strong> It&rsquo;s been saved to our private Sheet and we&rsquo;ve been notified. We&rsquo;ve also sent a confirmation to the email address you gave. We&rsquo;ll reply from our personal email, usually within one business day.';
-              panel.classList.add('show'); /* R17: keep a copy available even after a successful send */
+              /* The copy/download panel is the send-failure fallback only —
+                 on a confirmed send it is not shown. */
               sending.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
               sending.focus({ preventScroll: true });
               doneSending();

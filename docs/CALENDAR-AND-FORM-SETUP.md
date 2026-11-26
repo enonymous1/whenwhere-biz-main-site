@@ -44,7 +44,7 @@ contact details — the most it can ever reveal is that a date is booked.
 ### 1a. Create it
 
 1. In Google Sheets, create a new spreadsheet. Name it something clear,
-   e.g. `WhenWhere — Public Availability`.
+   e.g. `When&Where — Public Availability`.
 2. Row 1, exactly: `Date` | `Status` | `Note`
 3. Add one row per held or booked date — dates are `YYYY-MM-DD`:
 
@@ -99,7 +99,7 @@ Keep a **second, separate** Sheet for the real work: client names,
 venue, package, price, contact details, payment status, and the
 inquiry inbox.
 
-1. Create a second spreadsheet, e.g. `WhenWhere — Private Bookings`.
+1. Create a second spreadsheet, e.g. `When&Where — Private Bookings`.
    Share it only with the people who should see client details.
 2. **Never** Publish-to-web this one, and never put its link in
    `index.html`.
@@ -168,9 +168,9 @@ until you set up a real inbox for it.
 2. Check the private Sheet → `Inquiries` tab: one new row, in this
    order — Submitted | Name | Email | Phone | Type | Date | Venue |
    Guests | Budget | Stage | Dream/notes.
-3. Check your personal inbox for “New WhenWhere inquiry — …”.
+3. Check your personal inbox for “New When&Where inquiry — …”.
 4. Reply to the test from your personal Gmail, using one shared
-   signature every time, e.g. “Justin — WhenWhere.biz”.
+   signature every time, e.g. “Justin — When&Where.biz”.
 5. Delete the test row from `Inquiries` afterwards.
 
 If the form falls back to email / copy / download instead of

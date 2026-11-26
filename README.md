@@ -1,6 +1,6 @@
-# WhenWhere.biz — Main Site
+# When&Where.biz — Main Site
 
-The main site for WhenWhere.biz: weddings & events plus drone light
+The main site for When&Where.biz: weddings & events plus drone light
 shows, for Charlottesville and Central Virginia. It is the page the
 drone light shows page links home to.
 
@@ -158,7 +158,7 @@ git, and no backend server needed. The workflow
 
 **Updating the page:** small copy changes can be edited directly in
 `index.html` and pushed. Bigger changes (new sections, theme work)
-go through the WhenWhere.biz Main Site build and are re-exported
+go through the When&Where.biz Main Site build and are re-exported
 over `index.html`, then pushed the same way. Calendar date changes
 do not need a push at all once the Sheet is connected — edit the
 Sheet. Note: the Sunset Peach theme and theme picker were removed
@@ -191,9 +191,9 @@ whenwhere-biz-main-site/
 ├── content.json                # the page content, local fallback for the Sheet
 ├── assets/                     # photos (hero, barn, ceremony, dancing, drone-hearts)
 ├── README.md
-└── LICENSE                     # © 2026 WhenWhere.biz, all rights reserved
+└── LICENSE                     # © 2026 When&Where.biz, all rights reserved
 ```
 
 ## License
 
-© 2026 WhenWhere.biz — All rights reserved. See `LICENSE`.
+© 2026 When&Where.biz — All rights reserved. See `LICENSE`.

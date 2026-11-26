@@ -1,4 +1,4 @@
-# WhenWhere.biz — Inquiry Pipeline & Workflow
+# When&Where.biz — Inquiry Pipeline & Workflow
 
 **What this is:** the journey of one inquiry on the main site, from a visitor
 finding the page to the event happening, told from both sides — what the
@@ -51,7 +51,7 @@ Before any of this works, the manager has already done the following
 | Manager does | Where |
 |---|---|
 | Creates the **public availability Sheet** — columns `Date \| Status \| Note` only. No client names, venues, prices, or contact details; the most it can ever reveal is that a date is booked. | Google Sheets, published to web as CSV |
-| Creates the **private bookings Sheet** — e.g. `WhenWhere — Private Bookings`. Never published to web, shared only with people who should see client details. | Google Sheets |
+| Creates the **private bookings Sheet** — e.g. `When&Where — Private Bookings`. Never published to web, shared only with people who should see client details. | Google Sheets |
 | Pastes `docs/apps-script/Code.gs` into the private Sheet's Apps Script editor, sets `NOTIFY_EMAIL` to his personal Gmail, and deploys it as a web app (Execute as: Me, Who has access: Anyone). | Apps Script |
 | Puts the web app URL in the site as `INQUIRY_ENDPOINT`. | `index.html` |
 | Adds his own tabs alongside `Inquiries` in the private Sheet (e.g. `Bookings`, `Payments`). The script only ever touches `Inquiries`, so their headers are his to type. | Private Sheet |
@@ -170,7 +170,7 @@ sequenceDiagram
 ### Manager
 
 - Gets a **notification email** at his personal Gmail for every
-  inquiry. Subject: `New WhenWhere inquiry — {type}`.
+  inquiry. Subject: `New When&Where inquiry — {type}`.
 - The email lists every field the visitor entered, and ends with a
   **"View all inquiries in the private Sheet"** link that opens the
   spreadsheet at the `Inquiries` tab — one click shows the full history

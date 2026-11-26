@@ -1,5 +1,5 @@
 /**
- * WhenWhere.biz — inquiry form backend (Option A)
+ * When&Where.biz — inquiry form backend (Option A)
  *
  * Paste this whole file into the PRIVATE bookings Sheet:
  *   Extensions → Apps Script, replace the default Code.gs contents.
@@ -202,7 +202,7 @@ function ensureSheet(ss) {
  */
 function doGet() {
   return ContentService.createTextOutput(
-    'WhenWhere.biz inquiry endpoint — POST an inquiry here; see the site for the form.')
+    'When&Where.biz inquiry endpoint — POST an inquiry here; see the site for the form.')
     .setMimeType(ContentService.MimeType.TEXT);
 }
 
@@ -239,7 +239,7 @@ function doGet() {
  *   parts MailApp.sendEmail takes.
  */
 function buildConfirmEmail(email, fields, dream) {
-  var subject = 'Thanks — your WhenWhere inquiry is in';
+  var subject = 'Thanks — your When&Where inquiry is in';
   var lines = ['Thanks — your inquiry is in.', ''];
   var rows = '';
   for (var i = 0; i < fields.length; i++) {
@@ -259,7 +259,7 @@ function buildConfirmEmail(email, fields, dream) {
   lines.push('', 'Justin will reply personally to confirm your date, usually within one business day.',
     '', 'This email was sent to ' + email + ' because someone submitted an inquiry with that address.',
     'If that wasn’t you, just ignore it — nothing else is coming unless you ask.',
-    '', '— WhenWhere', 'whenwhere.biz');
+    '', '— When&Where', 'whenwhere.biz');
   var body = lines.join('\n');
   var dreamHtml = dream
     ? '<p style="margin:18px 0 0;padding:14px 16px;background:#141a3d;border-radius:8px;'
@@ -271,7 +271,7 @@ function buildConfirmEmail(email, fields, dream) {
     + 'style="width:100%;max-width:600px;background:#0d1230;border:1px solid #d9a441;'
     + 'border-radius:12px;padding:28px 30px;">'
     + '<tr><td style="font-size:11px;letter-spacing:.3em;color:#d9a441;font-weight:700;">'
-    + 'WHENWHERE.BIZ</td></tr>'
+    + 'WHEN&amp;WHERE.BIZ</td></tr>'
     + '<tr><td style="padding:8px 0 4px;font-family:Georgia,serif;font-size:26px;color:#ffffff;">'
     + 'Thanks — your inquiry is in</td></tr>'
     + '<tr><td style="padding:0 0 14px;font-size:13px;color:#aab3d6;">'
@@ -339,7 +339,7 @@ function doPost(e) {
       ];
 
       /* Plain-text body — also the fallback for clients without HTML. */
-      var textLines = ['New WhenWhere inquiry — ' + (row[4] || 'event'), ''];
+      var textLines = ['New When&Where inquiry — ' + (row[4] || 'event'), ''];
       for (var i = 0; i < fields.length; i++) {
         var v = (fields[i][1] || '').trim();
         if (v) textLines.push(fields[i][0] + ': ' + v);
@@ -370,7 +370,7 @@ function doPost(e) {
         + 'style="width:100%;max-width:600px;background:#0d1230;border:1px solid #d9a441;'
         + 'border-radius:12px;padding:28px 30px;">'
         + '<tr><td style="font-size:11px;letter-spacing:.3em;color:#d9a441;font-weight:700;">'
-        + 'WHENWHERE.BIZ</td></tr>'
+        + 'WHEN&amp;WHERE.BIZ</td></tr>'
         + '<tr><td style="padding:8px 0 4px;font-family:Georgia,serif;font-size:26px;color:#ffffff;">'
         + 'New inquiry — ' + esc(row[4] || 'event') + '</td></tr>'
         + '<tr><td style="padding:0 0 14px;font-size:13px;color:#aab3d6;">'
@@ -395,11 +395,11 @@ function doPost(e) {
       if (SEND_CONFIRMATION) {
         try {
           var confirm = buildConfirmEmail(email, fields, dream);
-          var confirmOpts = { htmlBody: confirm.htmlBody, name: 'WhenWhere.biz' };
+          var confirmOpts = { htmlBody: confirm.htmlBody, name: 'When&Where.biz' };
           if (notifyOk) confirmOpts.replyTo = NOTIFY_EMAIL;
           MailApp.sendEmail(email, confirm.subject, confirm.body, confirmOpts);
         } catch (confirmErr) {
-          Logger.log('WhenWhere inquiry saved but confirmation email failed: ' + confirmErr);
+          Logger.log('When&Where inquiry saved but confirmation email failed: ' + confirmErr);
         }
       }
 
@@ -413,13 +413,13 @@ function doPost(e) {
       if (notifyOk) {
         try {
           MailApp.sendEmail(NOTIFY_EMAIL,
-            'New WhenWhere inquiry — ' + (row[4] || 'event'), text,
-            { htmlBody: html, replyTo: email, name: 'WhenWhere.biz' });
+            'New When&Where inquiry — ' + (row[4] || 'event'), text,
+            { htmlBody: html, replyTo: email, name: 'When&Where.biz' });
         } catch (mailErr) {
-          Logger.log('WhenWhere inquiry saved but notification email failed: ' + mailErr);
+          Logger.log('When&Where inquiry saved but notification email failed: ' + mailErr);
         }
       } else {
-        Logger.log('WhenWhere inquiry saved; NOTIFY_EMAIL is unset or invalid, notification skipped.');
+        Logger.log('When&Where inquiry saved; NOTIFY_EMAIL is unset or invalid, notification skipped.');
       }
 
       /* Only now — after the row and the notify attempt — mark the
@@ -432,7 +432,7 @@ function doPost(e) {
   } catch (err) {
     /* Never leak internals to a public caller; the detail is in the
        Apps Script Executions log, where the owner looks. */
-    Logger.log('WhenWhere doPost failed: ' + err);
+    Logger.log('When&Where doPost failed: ' + err);
     return ContentService.createTextOutput('error: unavailable, please try again');
   }
 }

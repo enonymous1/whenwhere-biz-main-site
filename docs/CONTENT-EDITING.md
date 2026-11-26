@@ -1,6 +1,6 @@
 # Editing the site content — main site
 
-How to change the words and photos on the WhenWhere.biz main site
+How to change the words and photos on the When&Where.biz main site
 without touching code. Written for two sets of eyes: the **editor**
 (the person updating copy and photos) and the **manager/developer**
 (the person who owns the repo and the Sheet).

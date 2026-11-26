@@ -17,7 +17,7 @@
 # be re-run on its own.
 #
 # The build job only uploads the public site files (index.html,
-# content.json, assets/) — docs/ (setup guides, Code.gs) is not served.
+# content.json, favicon.png, assets/) — docs/ (setup guides, Code.gs) is not served.
 # The validate job gates every deploy on the page's scripts parsing and
 # the data file being valid JSON.
 name: Deploy to GitHub Pages
@@ -76,7 +76,7 @@ jobs:
       - name: Stage public site files
         run: |
           mkdir -p site/assets
-          cp index.html content.json site/
+          cp index.html content.json favicon.png site/
           cp -r assets/. site/assets/
 
       - name: Upload Pages artifact
